@@ -14,7 +14,7 @@ services:
       - APP_ENV=dev
       - SCAN_CACHEABLE=false
     networks:
-      picpay_microservices_network:
+      microservices_network:
         ipv4_address: ${MICROSERVICE_TRANSACTION_IP}
   kafka:
     command:
@@ -36,7 +36,7 @@ services:
     volumes:
       - redpanda-0:/var/lib/redpanda/data
     networks:
-      picpay_microservices_network:
+      microservices_network:
         ipv4_address: ${KAFKA_IP}
     ports:
       - "18081:18081"
@@ -48,7 +48,7 @@ services:
     container_name: redpanda-console
     image: docker.redpanda.com/vectorized/console:v2.2.4
     networks:
-      - picpay_microservices_network
+      - microservices_network
     entrypoint: /bin/sh
     command: -c 'echo "$$CONSOLE_CONFIG_FILE" > /tmp/config.yml; /app/console'
     environment:
@@ -73,7 +73,7 @@ services:
     ports:
       - "3306:3306"
     networks:
-      picpay_microservices_network:
+      microservices_network:
         ipv4_address: ${MYSQL_IP}
     environment:
       MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
@@ -85,7 +85,7 @@ services:
       - ./docker/mysql/conf.d:/etc/mysql/conf.d
 
 networks:
-  picpay_microservices_network:
+  microservices_network:
     ipam:
       config:
         - subnet: ${NETWORK_SUBNET}
