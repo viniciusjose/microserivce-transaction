@@ -16,10 +16,10 @@ ARG timezone
 
 ENV TIMEZONE=${timezone:-"America/Sao_Paulo"} \
     APP_ENV=dev \
-    PHPIZE_DEPS="rdkafka" \
+    PHPIZE_DEPS="php83-pecl-rdkafka php83-pecl-xdebug" \
     SCAN_CACHEABLE=(true)
 
-RUN apk add build-base \
+RUN apk add build-base $PHPIZE_DEPS \
     && wget https://github.com/emcrisostomo/fswatch/releases/download/1.14.0/fswatch-1.14.0.tar.gz \
     && tar -xf fswatch-1.14.0.tar.gz \
     && cd fswatch-1.14.0/ \
@@ -37,6 +37,8 @@ RUN set -ex \
     && cd /etc/php* \
     # - config PHP
     && { \
+        echo "zend_extension=xdebug.so"; \
+        echo "xdebug.mode=coverage"; \
         echo "upload_max_filesize=128M"; \
         echo "post_max_size=128M"; \
         echo "memory_limit=1G"; \

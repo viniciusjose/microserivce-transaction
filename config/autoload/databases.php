@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+
 /**
  * This file is part of Hyperf.
  *
@@ -32,10 +33,15 @@ return [
         ],
         'commands' => [
             'gen:model' => [
-                'path' => 'app/Model',
+                'path' => 'app/Infra/Entities',
                 'force_casts' => true,
                 'inheritance' => 'Model',
             ],
         ],
+    ],
+    'testing' => [
+        'driver' => 'sqlite',
+        'host' => 'localhost',
+        'database' => ':memory:',
     ],
 ];

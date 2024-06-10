@@ -1,10 +1,19 @@
 <?php
 
 declare(strict_types=1);
+
+use Hyperf\Contract\ApplicationInterface;
+use Hyperf\Contract\ConfigInterface;
+use Hyperf\Di\ClassLoader;
+use Hyperf\Engine\DefaultOption;
+use Swoole\Runtime;
+use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
 /**
  * This file is part of Hyperf.
  *
- * @link     https://www.hyperf.io
+ * @see     https://www.hyperf.io
  * @document https://hyperf.wiki
  * @contact  group@hyperf.io
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
@@ -13,18 +22,28 @@ ini_set('display_errors', 'on');
 ini_set('display_startup_errors', 'on');
 
 error_reporting(E_ALL);
-date_default_timezone_set('Asia/Shanghai');
+date_default_timezone_set('America/Sao_Paulo');
 
-Swoole\Runtime::enableCoroutine(true);
+Runtime::enableCoroutine(true);
 
-! defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
+!defined('BASE_PATH') && define('BASE_PATH', dirname(__DIR__, 1));
 
 require BASE_PATH . '/vendor/autoload.php';
 
-! defined('SWOOLE_HOOK_FLAGS') && define('SWOOLE_HOOK_FLAGS', Hyperf\Engine\DefaultOption::hookFlags());
+!defined('SWOOLE_HOOK_FLAGS') && define('SWOOLE_HOOK_FLAGS', DefaultOption::hookFlags());
 
-Hyperf\Di\ClassLoader::init();
+ClassLoader::init();
 
 $container = require BASE_PATH . '/config/container.php';
 
-$container->get(Hyperf\Contract\ApplicationInterface::class);
+$config = $container->get(ConfigInterface::class);
+$config->set('databases.default', $config->get('databases.testing'));
+
+$container->get(ApplicationInterface::class);
+
+\Hyperf\Coroutine\run(function () use ($container) {
+    $container->get('Hyperf\Database\Commands\Migrations\MigrateCommand')->run(
+        new StringInput(''),
+        new ConsoleOutput()
+    );
+});

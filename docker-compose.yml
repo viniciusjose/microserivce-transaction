@@ -1,4 +1,3 @@
-version: '3'
 services:
   microservice-transaction:
     container_name: microservice-transaction

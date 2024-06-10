@@ -13,19 +13,25 @@
     "license": "Apache-2.0",
     "require": {
         "php": ">=8.2",
+        "fakerphp/faker": "^1.23",
         "hyperf/cache": "~3.1.0",
         "hyperf/command": "~3.1.0",
         "hyperf/config": "~3.1.0",
         "hyperf/database": "~3.1.0",
+        "hyperf/database-sqlite": "^3.1",
         "hyperf/db-connection": "~3.1.0",
+        "hyperf/di": "^3.1",
         "hyperf/engine": "^2.10",
         "hyperf/framework": "~3.1.0",
-        "hyperf/guzzle": "~3.1.0",
+        "hyperf/guzzle": "^3.1",
+        "hyperf/http-message": "^3.1",
         "hyperf/http-server": "~3.1.0",
         "hyperf/kafka": "^3.1",
         "hyperf/logger": "~3.1.0",
         "hyperf/memory": "~3.1.0",
-        "hyperf/process": "~3.1.0"
+        "hyperf/process": "~3.1.0",
+        "hyperf/validation": "^3.1",
+        "ramsey/uuid": "^4.7"
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.0",
@@ -68,7 +74,11 @@
         "post-autoload-dump": [
             "rm -rf runtime/container"
         ],
-        "test": "co-phpunit --prepend test/bootstrap.php --colors=always",
+        "phpunit": "co-phpunit --prepend test/bootstrap.php --colors=always",
+        "test": "phpunit --testsuite=Unit,Feature",
+        "test:unit": "phpunit --testsuite=Unit",
+        "test:feature": "phpunit --testsuite=Feature",
+        "test:coverage": "phpunit --testsuite=Unit,Feature --coverage-text --coverage-html build/coverage",
         "cs-fix": "php-cs-fixer fix $1",
         "analyse": "phpstan analyse --memory-limit 300M",
         "start": [
