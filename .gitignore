@@ -16,3 +16,4 @@ docker
 .vscode/
 /phpstan.neon
 /phpunit.xml
+build

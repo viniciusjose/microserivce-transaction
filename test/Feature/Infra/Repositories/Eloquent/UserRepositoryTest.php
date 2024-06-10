@@ -17,9 +17,12 @@ use App\Infra\Repositories\Eloquent\UserRepository;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\Database\Exception\QueryException;
+use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
+use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(UserRepository::class), CoversClass(WalletFactory::class)]
 class UserRepositoryTest extends TestCase
 {
     protected UserRepository $sut;
@@ -52,7 +55,8 @@ class UserRepositoryTest extends TestCase
     }
 
     #[DataProvider('userDataProvider')]
-    public function testStore(array $data): void
+    #[Test]
+    public function test_it_should_be_given_name_is_equal(array $data): void
     {
         (new WalletFactory())->create([
             'id' => $data['wallet_id'],
@@ -64,7 +68,8 @@ class UserRepositoryTest extends TestCase
     }
 
     #[DataProvider('userDataProvider')]
-    public function testStoreThrowDuplicateEmail(array $data): void
+    #[Test]
+    public function test_store_throw_duplicate_email(array $data): void
     {
         $this->expectException(QueryException::class);
 
@@ -78,7 +83,8 @@ class UserRepositoryTest extends TestCase
     }
 
     #[DataProvider('userDataProvider')]
-    public function testStoreThrowDuplicateIdentify(array $data): void
+    #[Test]
+    public function test_store_throw_duplicate_identify(array $data): void
     {
         $this->expectException(QueryException::class);
 

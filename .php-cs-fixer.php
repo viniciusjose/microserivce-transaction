@@ -21,7 +21,7 @@ EOF;
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)
     ->setRules([
-        '@PSR2' => true,
+        '@PSR12' => true,
         '@Symfony' => true,
         '@DoctrineAnnotation' => true,
         '@PhpCsFixer' => true,
@@ -95,6 +95,7 @@ return (new PhpCsFixer\Config())
         'standardize_not_equals' => true,
         'multiline_comment_opening_closing' => true,
         'single_line_empty_body' => false,
+        'php_unit_method_casing' => 'snake_case',
     ])
     ->setFinder(
         PhpCsFixer\Finder::create()

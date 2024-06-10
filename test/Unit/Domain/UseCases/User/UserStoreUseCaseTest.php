@@ -24,9 +24,14 @@ use App\Domain\UseCases\User\UserStoreUseCase;
 use App\Infra\Enums\UserType;
 use Carbon\Carbon;
 use Faker\Factory;
+use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\Test;
+use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
 use PHPUnit\Framework\TestCase;
 
+#[CoversClass(UserStoreUseCase::class), CoversClass(UserStoreInputDto::class), CoversClass(UserStoreOutputDto::class)]
+#[UsesClass(User::class), UsesClass(Wallet::class), UsesClass(UserType::class), UsesClass(UserDuplicateException::class)]
 class UserStoreUseCaseTest extends TestCase
 {
     private UserStoreUseCase $sut;
@@ -76,7 +81,8 @@ class UserStoreUseCaseTest extends TestCase
         $this->sut = new UserStoreUseCase($this->uuidGeneratorMock, $this->userRepoMock, $this->walletRepoMock);
     }
 
-    public function testHandleSuccess(): void
+    #[Test]
+    public function test_handle_success(): void
     {
         $sutData = $this->sut->handle(
             new UserStoreInputDto(
@@ -108,7 +114,8 @@ class UserStoreUseCaseTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testItShouldThrowDuplicateUserExceptionIfEmailExists(): void
+    #[Test]
+    public function test_it_should_throw_duplicate_user_exception_If_email_exists(): void
     {
         $this->expectException(UserDuplicateException::class);
 
@@ -131,7 +138,8 @@ class UserStoreUseCaseTest extends TestCase
     /**
      * @throws Exception
      */
-    public function testItShouldThrowDuplicateUserExceptionIfIdentifyExists(): void
+    #[Test]
+    public function test_it_should_throw_duplicate_user_exception_if_identify_exists(): void
     {
         $this->expectException(UserDuplicateException::class);
 
