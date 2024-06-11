@@ -115,7 +115,7 @@ class UserStoreUseCaseTest extends TestCase
      * @throws Exception
      */
     #[Test]
-    public function test_it_should_throw_duplicate_user_exception_If_email_exists(): void
+    public function test_it_should_throw_duplicate_user_exception_if_email_exists(): void
     {
         $this->expectException(UserDuplicateException::class);
 

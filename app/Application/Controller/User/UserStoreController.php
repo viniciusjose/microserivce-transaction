@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\User;
 
-use App\Application\Request\UserStoreRequest;
+use App\Application\Request\User\UserStoreRequest;
 use App\Domain\DTO\User\store\UserStoreInputDto;
 use App\Domain\Exceptions\User\UserDuplicateException;
 use App\Domain\UseCases\User\UserStoreUseCase;
@@ -48,9 +48,9 @@ class UserStoreController
         } catch (UserDuplicateException $e) {
             return $response->withStatus($e->getCode())->json(['message' => $e->getMessage()]);
         } catch (Exception $e) {
-            return $response->withStatus(500)->json(['message' => 'Internal Server Error']);
+            return $response->withStatus(500)->json(['message' => $e->getMessage()]);
         }
 
-        return $response->json($user);
+        return $response->withStatus(201)->json($user);
     }
 }

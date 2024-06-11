@@ -75,10 +75,11 @@
             "rm -rf runtime/container"
         ],
         "phpunit": "co-phpunit --prepend test/bootstrap.php --colors=always",
-        "test": "phpunit --testsuite=Unit,Feature",
+        "test": "phpunit --testsuite=Unit,Feature,E2E",
         "test:unit": "phpunit --testsuite=Unit",
         "test:feature": "phpunit --testsuite=Feature",
-        "test:coverage": "phpunit --testsuite=Unit,Feature --coverage-text --coverage-html build/coverage",
+        "test:e2e": "phpunit --testsuite=E2E",
+        "test:coverage": "phpunit --testsuite=Unit,Feature,E2E --coverage-text --coverage-html build/coverage",
         "cs-fix": "php-cs-fixer fix $1",
         "analyse": "phpstan analyse --memory-limit 300M",
         "start": [

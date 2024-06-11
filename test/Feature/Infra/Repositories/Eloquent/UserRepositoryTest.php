@@ -12,6 +12,8 @@ declare(strict_types=1);
 
 namespace HyperfTest\Feature\Infra\Repositories\Eloquent;
 
+use App\Domain\Entities\User;
+use App\Infra\Factories\UserFactory;
 use App\Infra\Factories\WalletFactory;
 use App\Infra\Repositories\Eloquent\UserRepository;
 use Faker\Factory;
@@ -47,7 +49,7 @@ class UserRepositoryTest extends TestCase
                     'user_type' => 'user',
                     'email'     => 'any@email.com',
                     'password'  => $faker->password(),
-                    'identify'  => '123456789',
+                    'identify'  => '123as56789',
                     'wallet_id' => $faker->uuid(),
                 ],
             ]
@@ -100,5 +102,43 @@ class UserRepositoryTest extends TestCase
             'identify' => 'any_identify',
             'email'    => 'any_email'
         ]));
+    }
+
+    #[Test]
+    public function test_find_by_email_it_should_be_return_user(): void
+    {
+        $userStub = (new UserFactory())->create(['email' => 'any_email']);
+        $user = $this->sut->findByEmail($userStub->email);
+
+        self::assertInstanceOf(User::class, $user);
+        self::assertIsString($user->id);
+        self::assertEquals('any_email', $user->email);
+    }
+
+    #[Test]
+    public function test_find_by_email_it_should_be_return_null(): void
+    {
+        $user = $this->sut->findByEmail('invalid_email');
+
+        self::assertNull($user);
+    }
+
+    #[Test]
+    public function test_find_by_identify_it_should_be_return_user(): void
+    {
+        $userStub = (new UserFactory())->create(['identify' => 'any']);
+        $user = $this->sut->findByIdentify($userStub->identify);
+
+        self::assertInstanceOf(User::class, $user);
+        self::assertIsString($user->id);
+        self::assertEquals('any', $user->identify);
+    }
+
+    #[Test]
+    public function test_find_by_identify_it_should_be_return_null(): void
+    {
+        $user = $this->sut->findByIdentify('invalid_identify');
+
+        self::assertNull($user);
     }
 }

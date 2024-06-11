@@ -13,6 +13,6 @@ declare(strict_types=1);
 use App\Application\Controller\User\UserStoreController;
 use Hyperf\HttpServer\Router\Router;
 
-Router::addGroup('/user', function () {
+Router::addGroup('user', static function () {
     Router::post('', [UserStoreController::class, '__invoke']);
 });
