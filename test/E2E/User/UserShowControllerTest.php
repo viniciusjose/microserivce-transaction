@@ -3,8 +3,6 @@
 namespace HyperfTest\E2E\User;
 
 use App\Infra\Factories\UserFactory;
-use Faker\Factory;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Hyperf\Testing\Client;
