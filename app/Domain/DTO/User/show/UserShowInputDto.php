@@ -10,14 +10,12 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-namespace App\Domain\Contracts\Repositories\User;
+namespace App\Domain\DTO\User\show;
 
-interface UserRepositoryInterface extends
-    UserListInterface,
-    UserStoreInterface,
-    UserShowInterface,
-    UserFindByEmailInterface,
-    UserFindByIdentifyInterface
-
+readonly class UserShowInputDto
 {
+    public function __construct(
+        public string $id
+    ) {
+    }
 }

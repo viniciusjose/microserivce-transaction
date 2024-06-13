@@ -12,7 +12,7 @@ use Hyperf\Testing\Client;
 use function Hyperf\Coroutine\run;
 use function Hyperf\Support\make;
 
-final class StoreTest extends TestCase
+final class UserStoreControllerTest extends TestCase
 {
     private Client $client;
 

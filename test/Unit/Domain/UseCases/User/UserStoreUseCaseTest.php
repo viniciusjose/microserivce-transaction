@@ -35,10 +35,9 @@ use PHPUnit\Framework\TestCase;
 class UserStoreUseCaseTest extends TestCase
 {
     private UserStoreUseCase $sut;
-    private readonly UuidGeneratorInterface $uuidGeneratorMock;
-    private readonly UserRepositoryInterface $userRepoMock;
-    private readonly WalletRepositoryInterface $walletRepoMock;
-    private readonly User $userStub;
+    private UuidGeneratorInterface $uuidGeneratorMock;
+    private WalletRepositoryInterface $walletRepoMock;
+    private User $userStub;
 
     /**
      * @throws Exception
@@ -70,15 +69,15 @@ class UserStoreUseCaseTest extends TestCase
         $this->uuidGeneratorMock = $this->createMock(UuidGeneratorInterface::class);
         $this->uuidGeneratorMock->method('generate')->willReturn($faker->uuid());
 
-        $this->userRepoMock = $this->createMock(UserRepositoryInterface::class);
-        $this->userRepoMock->method('store')->willReturn($this->userStub);
-        $this->userRepoMock->method('findByEmail')->willReturn(null);
-        $this->userRepoMock->method('findByIdentify')->willReturn(null);
+        $userRepoMock = $this->createMock(UserRepositoryInterface::class);
+        $userRepoMock->method('store')->willReturn($this->userStub);
+        $userRepoMock->method('findByEmail')->willReturn(null);
+        $userRepoMock->method('findByIdentify')->willReturn(null);
 
         $this->walletRepoMock = $this->createMock(WalletRepositoryInterface::class);
         $this->walletRepoMock->method('store')->willReturn($walletStub);
 
-        $this->sut = new UserStoreUseCase($this->uuidGeneratorMock, $this->userRepoMock, $this->walletRepoMock);
+        $this->sut = new UserStoreUseCase($this->uuidGeneratorMock, $userRepoMock, $this->walletRepoMock);
     }
 
     #[Test]

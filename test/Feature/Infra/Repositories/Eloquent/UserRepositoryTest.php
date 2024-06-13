@@ -19,6 +19,7 @@ use App\Infra\Repositories\Eloquent\UserRepository;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\Database\Exception\QueryException;
+use Hyperf\DbConnection\Db;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -35,6 +36,13 @@ class UserRepositoryTest extends TestCase
         parent::setUp();
         $this->sut = new UserRepository();
         $this->faker = Factory::create();
+        Db::beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Db::rollBack();
     }
 
     public static function userDataProvider(): array
@@ -140,5 +148,43 @@ class UserRepositoryTest extends TestCase
         $user = $this->sut->findByIdentify('invalid_identify');
 
         self::assertNull($user);
+    }
+
+    #[Test]
+    public function test_show_it_should_be_return_user(): void
+    {
+        $userStub = (new UserFactory())->create();
+
+        $user = $this->sut->show($userStub->id);
+
+        self::assertInstanceOf(User::class, $user);
+        self::assertEquals($userStub->id, $user->id);
+    }
+
+    #[Test]
+    public function test_show_it_should_be_return_null(): void
+    {
+        $user = $this->sut->show('any_id');
+
+        self::assertNull($user);
+    }
+
+    #[Test]
+    public function test_lists_it_should_be_return_user(): void
+    {
+        $user = (new UserFactory())->create();
+
+        $users = $this->sut->lists();
+
+        self::assertCount(1, $users);
+        self::assertEquals($user->id, $users[0]->id);
+    }
+
+    #[Test]
+    public function test_lists_it_should_be_return_null(): void
+    {
+        $users = $this->sut->lists();
+
+        self::assertCount(0, $users);
     }
 }

@@ -12,44 +12,37 @@ declare(strict_types=1);
 
 namespace App\Application\Controller\User;
 
-use App\Application\Request\User\UserStoreRequest;
-use App\Domain\DTO\User\store\UserStoreInputDto;
+use App\Domain\DTO\User\show\UserShowInputDto;
 use App\Domain\Exceptions\User\UserDuplicateException;
-use App\Domain\UseCases\User\UserStoreUseCase;
-use App\Main\Factories\Domain\UseCases\User\UserStoreUseCaseFactory;
-use Exception;
+use App\Domain\Exceptions\User\UserNotFoundException;
+use App\Domain\UseCases\User\UserShowUseCase;
+use App\Main\Factories\Domain\UseCases\User\UserShowUseCaseFactory;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;
 
-class UserStoreController
+class UserShowController
 {
     protected LoggerInterface $logger;
-    private UserStoreUseCase $useCase;
+    private UserShowUseCase $useCase;
 
     public function __construct(LoggerFactory $logger)
     {
-        $this->useCase = UserStoreUseCaseFactory::make();
+        $this->useCase = UserShowUseCaseFactory::make();
         $this->logger = $logger->get();
     }
 
     public function __invoke(
-        UserStoreRequest $request,
+        string $id,
         ResponseInterface $response
     ): \Psr\Http\Message\ResponseInterface {
-        $httpRequest = $request->validated();
-
         try {
             $user = $this->useCase->handle(
-                new UserStoreInputDto(
-                    $httpRequest['name'],
-                    $httpRequest['userType'],
-                    $httpRequest['email'],
-                    $httpRequest['password'],
-                    $httpRequest['identify']
+                new UserShowInputDto(
+                    id: $id
                 )
             );
-        } catch (UserDuplicateException $e) {
+        } catch (UserNotFoundException $e) {
             return $response->withStatus($e->getCode())->json(['message' => $e->getMessage()]);
         } catch (\Throwable $e) {
             $this->logger->error($e->getMessage());
@@ -57,6 +50,6 @@ class UserStoreController
             return $response->withStatus(500)->json(['message' => 'Internal server error']);
         }
 
-        return $response->withStatus(201)->json($user);
+        return $response->withStatus(200)->json($user);
     }
 }

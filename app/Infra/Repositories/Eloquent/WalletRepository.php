@@ -14,7 +14,7 @@ class WalletRepository implements WalletRepositoryInterface
         $wallet = \App\Infra\Entities\Wallet::create($data);
 
         return new Wallet(
-            id: $data['id'],
+            id: $wallet->id,
             balance: $wallet->balance,
             lastBalance: $wallet->last_balance,
             createdAt: $wallet->created_at,

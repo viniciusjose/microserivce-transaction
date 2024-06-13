@@ -31,7 +31,7 @@ readonly class UserFactory
             'email'      => $this->faker->email(),
             'password'   => $this->faker->password(),
             'created_at' => Carbon::now(),
-            'identify'   => '11111111111',
+            'identify'   => $this->faker->randomFloat(0, 1000, 9999)
         ], $attributes));
     }
 }

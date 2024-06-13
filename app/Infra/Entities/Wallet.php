@@ -27,10 +27,13 @@ class Wallet extends Model
 
     protected string $keyType = 'string';
 
+    public bool $incrementing = false;
+
     /**
      * The attributes that should be cast to native types.
      */
     protected array $casts = [
+        'id'           => 'string',
         'created_at'   => 'datetime',
         'updated_at'   => 'datetime',
         'balance'      => 'float',
