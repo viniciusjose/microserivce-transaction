@@ -11,10 +11,12 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use Hyperf\Validation\Middleware\ValidationMiddleware;
+use App\Application\Controller\Auth\AuthLoginController;
+use Hyperf\HttpServer\Router\Router;
 
-return [
-    'http' => [
-        ValidationMiddleware::class
-    ],
-];
+Router::addGroup(
+    'auth/',
+    static function () {
+        Router::post('login', [AuthLoginController::class, '__invoke']);
+    }
+);

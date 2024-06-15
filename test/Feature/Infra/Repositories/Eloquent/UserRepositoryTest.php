@@ -187,4 +187,23 @@ class UserRepositoryTest extends TestCase
 
         self::assertCount(0, $users);
     }
+
+    #[Test]
+    public function test_credentials_it_should_be_return_user(): void
+    {
+        $user = (new UserFactory())->create();
+
+        $credential = $this->sut->credentials($user->email, $user->password);
+
+        self::assertEquals($credential->name, $user->name);
+        self::assertIsString($user->id);
+    }
+
+    #[Test]
+    public function test_credentials_it_should_be_return_null(): void
+    {
+        $credential = $this->sut->credentials('any_email', 'any_password');
+
+        self::assertNull($credential);
+    }
 }

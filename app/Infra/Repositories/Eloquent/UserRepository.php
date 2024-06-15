@@ -47,6 +47,29 @@ readonly class UserRepository implements UserRepositoryInterface
         );
     }
 
+    public function credentials(string $email, string $password): ?User
+    {
+        $user = \App\Infra\Entities\User::where('email', $email)
+            ->where('password', $password)
+            ->first();
+
+        if ($user === null) {
+            return null;
+        }
+
+        return new User(
+            $user->id,
+            $user->name,
+            $user->user_type,
+            $user->email,
+            $user->password,
+            $user->identify,
+            $user->wallet_id,
+            $user->created_at,
+            $user->updated_at,
+        );
+    }
+
     public function lists(): array
     {
         return \App\Infra\Entities\User::orderBy('name')

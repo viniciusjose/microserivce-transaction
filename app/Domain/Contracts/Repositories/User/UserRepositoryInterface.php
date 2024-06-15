@@ -17,7 +17,7 @@ interface UserRepositoryInterface extends
     UserStoreInterface,
     UserShowInterface,
     UserFindByEmailInterface,
-    UserFindByIdentifyInterface
-
+    UserFindByIdentifyInterface,
+    UserCredentialsInterface
 {
 }

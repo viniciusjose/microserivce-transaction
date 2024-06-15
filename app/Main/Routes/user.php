@@ -14,13 +14,17 @@ declare(strict_types=1);
 use App\Application\Controller\User\UserListController;
 use App\Application\Controller\User\UserShowController;
 use App\Application\Controller\User\UserStoreController;
+use App\Application\Middleware\AuthMiddleware;
 use Hyperf\HttpServer\Router\Router;
 
-Router::addGroup('user', static function () {
-    Router::get('', [UserListController::class, '__invoke']);
-    Router::post('', [UserStoreController::class, '__invoke']);
-});
+Router::post('user', [UserStoreController::class, '__invoke']);
 
-Router::addGroup('user/{id}', static function() {
-    Router::get('', [UserShowController::class, '__invoke']);
-});
+Router::addGroup(
+    'user',
+    static function () {
+        Router::get('', [UserListController::class, '__invoke']);
+        Router::get('/{id}', [UserShowController::class, '__invoke']);
+    },
+    ['middleware' => [AuthMiddleware::class]]
+);
+
