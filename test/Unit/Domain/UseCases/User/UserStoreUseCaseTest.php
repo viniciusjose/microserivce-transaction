@@ -62,7 +62,6 @@ class UserStoreUseCaseTest extends TestCase
             id: $faker->uuid(),
             userId: $this->userStub->id,
             balance: 0,
-            lastBalance: 0,
             createdAt: new Carbon()
         );
 

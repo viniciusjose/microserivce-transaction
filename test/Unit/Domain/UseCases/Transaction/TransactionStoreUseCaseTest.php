@@ -66,7 +66,6 @@ class TransactionStoreUseCaseTest extends TestCase
             id: $faker->uuid(),
             userId: $this->userStub->id,
             balance: 100,
-            lastBalance: 1000,
             createdAt: new Carbon()
         );
 

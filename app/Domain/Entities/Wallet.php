@@ -13,8 +13,8 @@ class Wallet
         public readonly string $id,
         public readonly string $userId,
         public float $balance,
-        public float $lastBalance,
         public readonly Carbon $createdAt,
+        public ?float $lastBalance = 0,
         public ?Carbon $updatedAt = null,
     ) {
     }
@@ -24,5 +24,11 @@ class Wallet
         if ($this->balance < $value) {
             throw new NotEnoughBalanceException('Payer has no enough balance', 400);
         }
+    }
+
+    public function updateBalance(float $value): void
+    {
+        $this->lastBalance = $this->balance;
+        $this->balance -= $value;
     }
 }
