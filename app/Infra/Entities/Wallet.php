@@ -34,6 +34,7 @@ class Wallet extends Model
      */
     protected array $casts = [
         'id'           => 'string',
+        'user_id'      => 'string',
         'created_at'   => 'datetime',
         'updated_at'   => 'datetime',
         'balance'      => 'float',

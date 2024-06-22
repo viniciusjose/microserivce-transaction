@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
+use App\Domain\Exceptions\User\CannotMakeTransactionException;
 use App\Infra\Enums\UserType;
 use Carbon\Carbon;
 
@@ -19,5 +20,15 @@ readonly class User
         public Carbon $createdAt,
         public Carbon|null $updatedAt = null,
     ) {
+    }
+
+    public function canDoTransaction(): void
+    {
+        if ($this->userType === UserType::SALESMAN) {
+            throw new CannotMakeTransactionException(
+                'Salesman cannot make transactions',
+                400
+            );
+        }
     }
 }

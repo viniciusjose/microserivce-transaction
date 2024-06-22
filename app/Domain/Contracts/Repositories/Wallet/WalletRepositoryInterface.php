@@ -12,6 +12,6 @@ declare(strict_types=1);
 
 namespace App\Domain\Contracts\Repositories\Wallet;
 
-interface WalletRepositoryInterface extends WalletStoreInterface
+interface WalletRepositoryInterface extends WalletStoreInterface, WalletGetByUserInterface
 {
 }

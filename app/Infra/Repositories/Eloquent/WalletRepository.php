@@ -22,4 +22,22 @@ class WalletRepository implements WalletRepositoryInterface
             updatedAt: $wallet->updated_at,
         );
     }
+
+    public function getByUser(string $userId): ?Wallet
+    {
+        $wallet = \App\Infra\Entities\Wallet::where('user_id', $userId)->first();
+
+        if (!$wallet) {
+            return null;
+        }
+
+        return new Wallet(
+            id: $wallet->id,
+            userId: $wallet->user_id,
+            balance: $wallet->balance,
+            lastBalance: $wallet->last_balance,
+            createdAt: $wallet->created_at,
+            updatedAt: $wallet->updated_at,
+        );
+    }
 }
