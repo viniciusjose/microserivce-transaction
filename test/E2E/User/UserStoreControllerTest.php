@@ -4,6 +4,7 @@ namespace HyperfTest\E2E\User;
 
 use App\Infra\Factories\UserFactory;
 use Faker\Factory;
+use Hyperf\DbConnection\Db;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -20,6 +21,19 @@ final class UserStoreControllerTest extends TestCase
     {
         parent::__construct($name);
         $this->client = make(Client::class);
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Db::beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Db::rollBack();
     }
 
     public static function userDataProvider(): array

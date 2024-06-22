@@ -38,7 +38,7 @@ class WalletTest extends TestCase
         $wallet->hasEnoughBalance(150);
     }
 
-    public function test_it_should_be_return_wallet_balance_updated(): void
+    public function test_it_should_be_return_wallet_balance_decreased(): void
     {
         $wallet = new Wallet(
             id: 'any_wallet_id',
@@ -47,9 +47,24 @@ class WalletTest extends TestCase
             createdAt: Carbon::now()
         );
 
-        $wallet->updateBalance(50);
+        $wallet->decreaseBalance(50);
 
         self::assertEquals(50, $wallet->balance);
+        self::assertEquals(100, $wallet->lastBalance);
+    }
+
+    public function test_it_should_be_return_wallet_balance_increased(): void
+    {
+        $wallet = new Wallet(
+            id: 'any_wallet_id',
+            userId: 'any_user_id',
+            balance: 100,
+            createdAt: Carbon::now()
+        );
+
+        $wallet->increaseBalance(50);
+
+        self::assertEquals(150, $wallet->balance);
         self::assertEquals(100, $wallet->lastBalance);
     }
 }

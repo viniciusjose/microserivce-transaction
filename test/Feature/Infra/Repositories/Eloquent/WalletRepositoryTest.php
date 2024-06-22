@@ -12,11 +12,13 @@ declare(strict_types=1);
 
 namespace HyperfTest\Feature\Infra\Repositories\Eloquent;
 
+use App\Domain\Entities\Wallet;
 use App\Infra\Factories\WalletFactory;
 use App\Infra\Repositories\Eloquent\WalletRepository;
 use Carbon\Carbon;
 use Faker\Factory;
 use Faker\Generator;
+use Hyperf\DbConnection\Db;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
@@ -28,11 +30,20 @@ class WalletRepositoryTest extends TestCase
     protected WalletRepository $sut;
     protected Generator $faker;
 
+
     protected function setUp(): void
     {
         parent::setUp();
+        Db::beginTransaction();
+
         $this->sut = new WalletRepository();
         $this->faker = Factory::create();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Db::rollBack();
     }
 
     public static function walletMockDataProvider(): array
@@ -60,5 +71,25 @@ class WalletRepositoryTest extends TestCase
 
         $this->assertIsString($wallet->id);
         $this->assertEquals($data['balance'], $wallet->balance);
+    }
+
+    public function test_update_balance_it_should_be_update_balance_correctly(): void
+    {
+        $model = (new WalletFactory())->create();
+
+        $wallet = new Wallet(
+            id: $model->id,
+            userId: $model->user_id,
+            balance: (float)$model->balance,
+            createdAt: $model->created_at,
+            lastBalance: (float)$model->last_balance,
+            updatedAt: $model->updatedAt
+        );
+
+        $wallet->increaseBalance(100);
+
+        $this->sut->updateBalance($wallet);
+
+        self::assertEquals($wallet->balance, $this->sut->getByUser($wallet->userId)->balance);
     }
 }

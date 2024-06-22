@@ -6,12 +6,15 @@ namespace App\Infra\Repositories\Eloquent;
 
 use App\Domain\Contracts\Repositories\Wallet\WalletRepositoryInterface;
 use App\Domain\Entities\Wallet;
+use App\Infra\Entities\Wallet as Model;
+use Carbon\Carbon;
+use Hyperf\DbConnection\Db;
 
 class WalletRepository implements WalletRepositoryInterface
 {
     public function store(?array $data = null): Wallet
     {
-        $wallet = \App\Infra\Entities\Wallet::create($data);
+        $wallet = Model::create($data);
 
         return new Wallet(
             id: $wallet->id,
@@ -24,7 +27,7 @@ class WalletRepository implements WalletRepositoryInterface
 
     public function getByUser(string $userId): ?Wallet
     {
-        $wallet = \App\Infra\Entities\Wallet::where('user_id', $userId)->first();
+        $wallet = Model::where('user_id', $userId)->first();
 
         if (!$wallet) {
             return null;
@@ -37,5 +40,16 @@ class WalletRepository implements WalletRepositoryInterface
             createdAt: $wallet->created_at,
             updatedAt: $wallet->updated_at,
         );
+    }
+
+    public function updateBalance(Wallet $wallet): void
+    {
+        Db::table('wallets')
+            ->where('id', $wallet->id)
+            ->update([
+                'balance'      => $wallet->balance,
+                'last_balance' => $wallet->lastBalance,
+                'updated_at'   => Carbon::now(),
+            ]);
     }
 }

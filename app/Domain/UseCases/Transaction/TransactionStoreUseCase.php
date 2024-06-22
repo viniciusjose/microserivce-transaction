@@ -2,8 +2,12 @@
 
 namespace App\Domain\UseCases\Transaction;
 
+use App\Domain\Contracts\Gateways\TransactionAuthorizeInterface;
+use App\Domain\Contracts\Gateways\UuidGeneratorInterface;
+use App\Domain\Contracts\Repositories\Transaction\TransactionStoreInterface;
 use App\Domain\Contracts\Repositories\User\UserShowInterface;
 use App\Domain\Contracts\Repositories\Wallet\WalletGetByUserInterface;
+use App\Domain\Contracts\Repositories\Wallet\WalletUpdateBalanceInterface;
 use App\Domain\DTO\Transaction\TransactionStoreInputDto;
 use App\Domain\Entities\Transaction;
 use App\Domain\Exceptions\Transaction\NotValidTransactionException;
@@ -15,8 +19,11 @@ readonly class TransactionStoreUseCase
 {
 
     public function __construct(
+        protected UuidGeneratorInterface $uuidGenerator,
+        protected TransactionStoreInterface $transactionRepo,
         protected UserShowInterface $userRepo,
-        protected WalletGetByUserInterface $walletRepo
+        protected WalletUpdateBalanceInterface|WalletGetByUserInterface $walletRepo,
+        protected TransactionAuthorizeInterface $transactionAuthorizationGateway
     ) {
     }
 
@@ -60,10 +67,23 @@ readonly class TransactionStoreUseCase
             payerWalletId: $payerWallet->id,
             payeeWalletId: $payeeWallet->id,
             value: $data->value,
-            date: Carbon::now()
+            date: Carbon::now(),
+            id: $this->uuidGenerator->generate()
         );
 
         $transaction->checkValue();
+
+        if (!$this->transactionAuthorizationGateway->authorize($transaction)) {
+            throw new NotValidTransactionException('Transaction not authorized', 400);
+        }
+
+        $payerWallet->decreaseBalance($data->value);
+        $payeeWallet->increaseBalance($data->value);
+
+        $this->transactionRepo->store($transaction);
+
+        $this->walletRepo->updateBalance($payerWallet);
+        $this->walletRepo->updateBalance($payeeWallet);
 
         return true;
     }

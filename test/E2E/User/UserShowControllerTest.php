@@ -4,6 +4,7 @@ namespace HyperfTest\E2E\User;
 
 use App\Infra\Factories\UserFactory;
 use Firebase\JWT\JWT;
+use Hyperf\DbConnection\Db;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Hyperf\Testing\Client;
@@ -22,6 +23,19 @@ final class UserShowControllerTest extends TestCase
         parent::__construct($name);
         $this->client = make(Client::class);
         $this->token = JWT::encode(['id' => 'any_id'], config('jwt.secret'), config('jwt.alg'));
+    }
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+
+        Db::beginTransaction();
+    }
+
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+        Db::rollBack();
     }
 
     #[Test]

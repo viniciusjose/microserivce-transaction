@@ -3,12 +3,13 @@
 namespace App\Infra\Gateways;
 
 use App\Domain\Contracts\Gateways\TransactionAuthorizeInterface;
+use App\Domain\Entities\Transaction;
 
 class TransactionAuthorize implements TransactionAuthorizeInterface
 {
 
-    public function authorize(): bool
+    public function authorize(Transaction $transaction): bool
     {
-        // TODO: Implement authorize() method.
+        return true;
     }
 }

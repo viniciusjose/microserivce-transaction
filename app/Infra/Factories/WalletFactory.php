@@ -20,10 +20,11 @@ readonly class WalletFactory
     public function create(array $attributes = []): Wallet
     {
         $user = (new UserFactory())->create();
+
         return Wallet::create(array_merge([
             'id'      => $this->faker->uuid(),
             'user_id' => $user->id,
-            'balance' => $this->faker->randomFloat(2, 0, 1000),
+            'balance' => 1000,
         ], $attributes));
     }
 }

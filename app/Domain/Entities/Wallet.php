@@ -26,9 +26,15 @@ class Wallet
         }
     }
 
-    public function updateBalance(float $value): void
+    public function decreaseBalance(float $value): void
     {
         $this->lastBalance = $this->balance;
         $this->balance -= $value;
+    }
+
+    public function increaseBalance(float $value): void
+    {
+        $this->lastBalance = $this->balance;
+        $this->balance += $value;
     }
 }
