@@ -14,11 +14,13 @@ class CreateWalletsTable extends Migration
     {
         Schema::create('wallets', static function (Blueprint $table) {
             $table->uuid('id')->unique();
+            $table->uuid('user_id')->unique();
             $table->decimal('balance', 10, 2)->default(0);
             $table->decimal('last_balance', 10, 2)->default(0);
             $table->datetimes();
 
             $table->primary('id');
+            $table->foreign('user_id')->references('id')->on('users');
         });
     }
 

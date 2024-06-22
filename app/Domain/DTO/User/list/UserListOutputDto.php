@@ -13,7 +13,6 @@ declare(strict_types=1);
 namespace App\Domain\DTO\User\list;
 
 use App\Domain\DTO\User\show\UserShowOutputDto;
-use App\Domain\Entities\User;
 use Hyperf\Contract\Arrayable;
 
 readonly class UserListOutputDto implements Arrayable, \Countable

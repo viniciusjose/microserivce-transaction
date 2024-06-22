@@ -43,6 +43,7 @@ final class UserListControllerTest extends TestCase
     {
         run(function () {
             $user = (new UserFactory())->create();
+
             $response = $this->client->get(
                 uri: "api/user",
                 headers: [

@@ -38,7 +38,6 @@ readonly class UserShowUseCase
             userType: $user->userType,
             email: $user->email,
             identify: $user->identify,
-            walletId: $user->walletId,
             createdAt: $user->createdAt,
             updatedAt: $user->updatedAt,
         );

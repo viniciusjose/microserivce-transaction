@@ -44,20 +44,20 @@ readonly class UserStoreUseCase
             throw new UserDuplicateException('User already exists with this identify', 409);
         }
 
-        $wallet = $this->walletRepository->store([
-            'id'           => $this->uuidGenerator->generate(),
-            'balance'      => 0,
-            'last_balance' => 0,
-        ]);
-
         $user = $this->userRepository->store([
             'id'        => $this->uuidGenerator->generate(),
             'name'      => $data->name,
             'user_type' => $data->userType,
             'email'     => $data->email,
             'password'  => $data->password,
-            'identify'  => $data->identify,
-            'wallet_id' => $wallet->id,
+            'identify'  => $data->identify
+        ]);
+
+        $this->walletRepository->store([
+            'id'           => $this->uuidGenerator->generate(),
+            'user_id'      => $user->id,
+            'balance'      => 0,
+            'last_balance' => 0,
         ]);
 
         return new UserStoreOutputDto(
@@ -66,7 +66,6 @@ readonly class UserStoreUseCase
             userType: $user->userType,
             email: $user->email,
             identify: $user->identify,
-            walletId: $user->walletId,
             createdAt: $user->createdAt,
             updatedAt: $user->updatedAt
         );

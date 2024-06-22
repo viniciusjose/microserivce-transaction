@@ -34,7 +34,6 @@ readonly class UserListUseCase
                 $user->userType,
                 $user->email,
                 $user->identify,
-                $user->walletId,
                 $user->createdAt,
                 $user->updatedAt
             ),

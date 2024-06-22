@@ -24,7 +24,6 @@ readonly class UserStoreOutputDto implements Arrayable
         public UserType $userType,
         public string $email,
         public string $identify,
-        public string $walletId,
         public Carbon $createdAt,
         public Carbon|null $updatedAt = null
     ) {
@@ -38,7 +37,6 @@ readonly class UserStoreOutputDto implements Arrayable
             'user_type'  => $this->userType->value,
             'email'      => $this->email,
             'identify'   => $this->identify,
-            'wallet_id'  => $this->walletId,
             'created_at' => $this->createdAt,
             'updated_at' => $this->updatedAt,
         ];

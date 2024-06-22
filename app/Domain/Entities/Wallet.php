@@ -10,6 +10,7 @@ readonly class Wallet
 {
     public function __construct(
         public string $id,
+        public string $userId,
         public float $balance,
         public float $lastBalance,
         public Carbon $createdAt,

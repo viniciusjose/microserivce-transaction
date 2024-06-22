@@ -42,7 +42,7 @@ $config->set('databases.default', $config->get('databases.testing'));
 $container->get(ApplicationInterface::class);
 
 \Hyperf\Coroutine\run(function () use ($container) {
-    $container->get('Hyperf\Database\Commands\Migrations\MigrateCommand')->run(
+    $migration = $container->get('Hyperf\Database\Commands\Migrations\MigrateCommand')->run(
         new StringInput(''),
         new ConsoleOutput()
     );

@@ -20,7 +20,6 @@ readonly class UserRepository implements UserRepositoryInterface
             $user->email,
             $user->password,
             $user->identify,
-            $user->wallet_id,
             $user->created_at,
             $user->updated_at,
         );
@@ -41,7 +40,6 @@ readonly class UserRepository implements UserRepositoryInterface
             $user->email,
             $user->password,
             $user->identify,
-            $user->wallet_id,
             $user->created_at,
             $user->updated_at,
         );
@@ -64,7 +62,6 @@ readonly class UserRepository implements UserRepositoryInterface
             $user->email,
             $user->password,
             $user->identify,
-            $user->wallet_id,
             $user->created_at,
             $user->updated_at,
         );
@@ -82,7 +79,6 @@ readonly class UserRepository implements UserRepositoryInterface
                     $user->email,
                     $user->password,
                     $user->identify,
-                    $user->wallet_id,
                     $user->created_at,
                     $user->updated_at,
                 );
@@ -106,7 +102,6 @@ readonly class UserRepository implements UserRepositoryInterface
             $user->email,
             $user->password,
             $user->identify,
-            $user->wallet_id,
             $user->created_at,
             $user->updated_at,
         );
@@ -128,7 +123,6 @@ readonly class UserRepository implements UserRepositoryInterface
             $user->email,
             $user->password,
             $user->identify,
-            $user->wallet_id,
             $user->created_at,
             $user->updated_at,
         );

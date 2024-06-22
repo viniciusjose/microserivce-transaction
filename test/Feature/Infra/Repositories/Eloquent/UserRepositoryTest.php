@@ -57,8 +57,7 @@ class UserRepositoryTest extends TestCase
                     'user_type' => 'user',
                     'email'     => 'any@email.com',
                     'password'  => $faker->password(),
-                    'identify'  => '123as56789',
-                    'wallet_id' => $faker->uuid(),
+                    'identify'  => '123as56789'
                 ],
             ]
         ];
@@ -68,10 +67,6 @@ class UserRepositoryTest extends TestCase
     #[Test]
     public function test_it_should_be_given_name_is_equal(array $data): void
     {
-        (new WalletFactory())->create([
-            'id' => $data['wallet_id'],
-        ]);
-
         $user = $this->sut->store($data);
 
         $this->assertEquals($data['name'], $user->name);
@@ -83,10 +78,6 @@ class UserRepositoryTest extends TestCase
     {
         $this->expectException(QueryException::class);
 
-        (new WalletFactory())->create([
-            'id' => $data['wallet_id'],
-        ]);
-
         $this->sut->store(array_merge($data, ['email' => 'any_email']));
 
         $this->sut->store(array_merge($data, ['email' => 'any_email', 'identify' => 'any_identify']));
@@ -97,10 +88,6 @@ class UserRepositoryTest extends TestCase
     public function test_store_throw_duplicate_identify(array $data): void
     {
         $this->expectException(QueryException::class);
-
-        (new WalletFactory())->create([
-            'id' => $data['wallet_id'],
-        ]);
 
         $this->sut->store(array_merge($data, [
             'identify' => 'any_identify'

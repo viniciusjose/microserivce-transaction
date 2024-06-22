@@ -45,6 +45,7 @@ class WalletRepositoryTest extends TestCase
                     'id'           => $faker->uuid(),
                     'balance'      => $faker->randomFloat(2, 0, 1000),
                     'last_balance' => $faker->randomFloat(2, 0, 1000),
+                    'user_id'      => $faker->uuid(),
                     'created_at'   => Carbon::now()
                 ],
             ]

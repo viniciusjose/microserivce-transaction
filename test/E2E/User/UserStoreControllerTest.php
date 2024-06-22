@@ -48,7 +48,7 @@ final class UserStoreControllerTest extends TestCase
             $response = $this->client->json('api/user', $user);
 
             self::assertEquals($user['name'], $response['name']);
-            self::assertNotNull($response['wallet_id']);
+            self::assertNotNull($response['id']);
         });
     }
 

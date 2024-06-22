@@ -16,7 +16,6 @@ readonly class User
         public string $email,
         public string $password,
         public string $identify,
-        public string $walletId,
         public Carbon $createdAt,
         public Carbon|null $updatedAt = null,
     ) {

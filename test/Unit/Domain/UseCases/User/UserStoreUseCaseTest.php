@@ -55,12 +55,12 @@ class UserStoreUseCaseTest extends TestCase
             email: $faker->valid()->email(),
             password: $faker->password(),
             identify: '123456789',
-            walletId: $faker->uuid(),
             createdAt: new Carbon()
         );
 
         $walletStub = new Wallet(
             id: $faker->uuid(),
+            userId: $this->userStub->id,
             balance: 0,
             lastBalance: 0,
             createdAt: new Carbon()
@@ -103,7 +103,6 @@ class UserStoreUseCaseTest extends TestCase
                 userType: $this->userStub->userType,
                 email: $this->userStub->email,
                 identify: $this->userStub->identify,
-                walletId: $this->userStub->walletId,
                 createdAt: $this->userStub->createdAt,
                 updatedAt: $this->userStub->updatedAt
             )

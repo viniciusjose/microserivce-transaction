@@ -47,7 +47,6 @@ class UserListUseCaseTest extends TestCase
                 email: $faker->valid()->email(),
                 password: $faker->password(),
                 identify: '123456789',
-                walletId: $faker->uuid(),
                 createdAt: new Carbon()
             )
         ];

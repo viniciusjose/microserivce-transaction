@@ -15,6 +15,7 @@ class WalletRepository implements WalletRepositoryInterface
 
         return new Wallet(
             id: $wallet->id,
+            userId: $wallet->user_id,
             balance: $wallet->balance,
             lastBalance: $wallet->last_balance,
             createdAt: $wallet->created_at,

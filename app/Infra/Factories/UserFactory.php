@@ -20,12 +20,8 @@ readonly class UserFactory
 
     public function create(array $attributes = []): User
     {
-        $wallet_id = $this->faker->uuid();
-        (new WalletFactory())->create(['id' => $wallet_id]);
-
         return User::create(array_merge([
             'id'         => $this->faker->uuid(),
-            'wallet_id'  => $wallet_id,
             'name'       => $this->faker->name(),
             'user_type'  => 'user',
             'email'      => $this->faker->email(),
