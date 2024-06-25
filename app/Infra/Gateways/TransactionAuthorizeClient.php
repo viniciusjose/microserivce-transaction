@@ -8,7 +8,7 @@ use GuzzleHttp\ClientInterface;
 use GuzzleHttp\Exception\GuzzleException;
 use Psr\Log\LoggerInterface;
 
-readonly class TransactionAuthorize implements TransactionAuthorizeInterface
+readonly class TransactionAuthorizeClient implements TransactionAuthorizeInterface
 {
 
     public function __construct(
