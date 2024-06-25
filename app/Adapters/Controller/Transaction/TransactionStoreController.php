@@ -4,7 +4,7 @@ namespace App\Adapters\Controller\Transaction;
 
 use App\Adapters\Request\Transaction\TransactionStoreRequest;
 use App\Application\UseCases\Transaction\TransactionStoreUseCase;
-use App\Domain\DTO\Transaction\TransactionStoreInputDto;
+use App\Domain\DTO\Transaction\store\TransactionStoreInputDto;
 use App\Domain\Exceptions\Transaction\NotEnoughBalanceException;
 use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use App\Domain\Exceptions\User\CannotMakeTransactionException;

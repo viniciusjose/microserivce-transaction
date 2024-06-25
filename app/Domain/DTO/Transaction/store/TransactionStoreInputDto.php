@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Domain\DTO\Transaction;
+namespace App\Domain\DTO\Transaction\store;
 
 readonly class TransactionStoreInputDto
 {

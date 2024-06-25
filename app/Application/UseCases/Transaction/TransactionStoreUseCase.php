@@ -2,13 +2,14 @@
 
 namespace App\Application\UseCases\Transaction;
 
+use App\Domain\Contracts\Gateways\KafkaProduceMessageInterface;
 use App\Domain\Contracts\Gateways\TransactionAuthorizeInterface;
 use App\Domain\Contracts\Gateways\UuidGeneratorInterface;
 use App\Domain\Contracts\Repositories\Transaction\TransactionStoreInterface;
 use App\Domain\Contracts\Repositories\User\UserShowInterface;
 use App\Domain\Contracts\Repositories\Wallet\WalletGetByUserInterface;
 use App\Domain\Contracts\Repositories\Wallet\WalletUpdateBalanceInterface;
-use App\Domain\DTO\Transaction\TransactionStoreInputDto;
+use App\Domain\DTO\Transaction\store\TransactionStoreInputDto;
 use App\Domain\Entities\Transaction;
 use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
@@ -23,7 +24,8 @@ readonly class TransactionStoreUseCase
         protected TransactionStoreInterface $transactionRepo,
         protected UserShowInterface $userRepo,
         protected WalletUpdateBalanceInterface|WalletGetByUserInterface $walletRepo,
-        protected TransactionAuthorizeInterface $transactionAuthorizationGateway
+        protected TransactionAuthorizeInterface $transactionAuthorizationGateway,
+        protected KafkaProduceMessageInterface $kafkaProduceMessage
     ) {
     }
 
@@ -84,6 +86,18 @@ readonly class TransactionStoreUseCase
 
         $this->walletRepo->updateBalance($payerWallet);
         $this->walletRepo->updateBalance($payeeWallet);
+
+        $this->kafkaProduceMessage->produce(
+            'notification',
+            'transaction',
+            [
+                'transaction_id' => $transaction->id,
+                'payer_id' => $payer->id,
+                'payee_id' => $payee->id,
+                'value'    => $data->value,
+                'date'     => $transaction->date->toDateTimeString()
+            ]
+        );
 
         return true;
     }

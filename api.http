@@ -1,0 +1,4 @@
+### GET request to example server
+POST https://util.devi.tools/api/v1/notify
+
+###

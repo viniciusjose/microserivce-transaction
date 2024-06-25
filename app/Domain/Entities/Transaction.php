@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Domain\Entities;
 
 use App\Domain\Exceptions\Transaction\InvalidValueException;
-use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use Carbon\Carbon;
 
 readonly class Transaction

@@ -3,13 +3,14 @@
 namespace HyperfTest\Unit\Application\UseCases\Transaction;
 
 use App\Application\UseCases\Transaction\TransactionStoreUseCase;
+use App\Domain\Contracts\Gateways\KafkaProduceMessageInterface;
 use App\Domain\Contracts\Gateways\TransactionAuthorizeInterface;
 use App\Domain\Contracts\Gateways\UuidGeneratorInterface;
 use App\Domain\Contracts\Repositories\Transaction\TransactionRepositoryInterface;
 use App\Domain\Contracts\Repositories\User\UserRepositoryInterface;
 use App\Domain\Contracts\Repositories\User\UserShowInterface;
 use App\Domain\Contracts\Repositories\Wallet\WalletRepositoryInterface;
-use App\Domain\DTO\Transaction\TransactionStoreInputDto;
+use App\Domain\DTO\Transaction\store\TransactionStoreInputDto;
 use App\Domain\Entities\Transaction;
 use App\Domain\Entities\User;
 use App\Domain\Entities\Wallet;
@@ -42,6 +43,7 @@ class TransactionStoreUseCaseTest extends TestCase
     protected TransactionAuthorizeInterface $authorizationGatewayMock;
     protected TransactionRepositoryInterface $transactionRepoMock;
     protected UuidGeneratorInterface $uuidGeneratorMock;
+    protected KafkaProduceMessageInterface $kafkaProduceMessageMock;
 
     protected Transaction $transactionStub;
     protected Wallet $walletStub;
@@ -114,12 +116,16 @@ class TransactionStoreUseCaseTest extends TestCase
         $this->authorizationGatewayMock = $this->createMock(TransactionAuthorizeInterface::class);
         $this->authorizationGatewayMock->method('authorize')->willReturn(true);
 
+        $this->kafkaProduceMessageMock = $this->createMock(KafkaProduceMessageInterface::class);
+        $this->kafkaProduceMessageMock->method('produce');
+
         $this->sut = new TransactionStoreUseCase(
             $this->uuidGeneratorMock,
             $this->transactionRepoMock,
             $this->userRepoMock,
             $this->walletRepoMock,
-            $this->authorizationGatewayMock
+            $this->authorizationGatewayMock,
+            $this->kafkaProduceMessageMock
         );
     }
 
@@ -153,7 +159,8 @@ class TransactionStoreUseCaseTest extends TestCase
             $this->transactionRepoMock,
             $mock,
             $this->walletRepoMock,
-            $this->authorizationGatewayMock
+            $this->authorizationGatewayMock,
+            $this->kafkaProduceMessageMock
         );
 
         $data = new TransactionStoreInputDto(
@@ -239,7 +246,8 @@ class TransactionStoreUseCaseTest extends TestCase
             $this->transactionRepoMock,
             $userRepoMock,
             $this->walletRepoMock,
-            $this->authorizationGatewayMock
+            $this->authorizationGatewayMock,
+            $this->kafkaProduceMessageMock
         );
 
         $sut->handle($data);
@@ -277,7 +285,8 @@ class TransactionStoreUseCaseTest extends TestCase
             $this->transactionRepoMock,
             $this->userRepoMock,
             $this->walletRepoMock,
-            $authorizeMock
+            $authorizeMock,
+            $this->kafkaProduceMessageMock
         );
 
         $sut->handle($data);

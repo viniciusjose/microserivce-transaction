@@ -3,6 +3,7 @@
 namespace App\Main\Factories\Application\UseCases\Transaction;
 
 use App\Application\UseCases\Transaction\TransactionStoreUseCase;
+use App\Main\Factories\Infra\Gateways\KafkaProducerMessageFactory;
 use App\Main\Factories\Infra\Gateways\TransactionAuthorizeClientFactory;
 use App\Main\Factories\Infra\Gateways\UuidGeneratorFactory;
 use App\Main\Factories\Infra\Repositories\Eloquent\TransactionRepositoryFactory;
@@ -18,7 +19,8 @@ class TransactionStoreUseCaseFactory
             TransactionRepositoryFactory::make(),
             UserRepositoryFactory::make(),
             WalletRepositoryFactory::make(),
-            TransactionAuthorizeClientFactory::make()
+            TransactionAuthorizeClientFactory::make(),
+            KafkaProducerMessageFactory::make()
         );
     }
 }

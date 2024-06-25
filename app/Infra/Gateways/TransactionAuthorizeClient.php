@@ -25,7 +25,7 @@ readonly class TransactionAuthorizeClient implements TransactionAuthorizeInterfa
     public function authorize(Transaction $transaction): bool
     {
         try {
-            $response = $this->client->request('GET', '', [
+            $response = $this->client->request('GET', 'authorize', [
                 'form_params' => [
                     'wallet_payer_id' => $transaction->payerWalletId,
                     'wallet_payee_id' => $transaction->payeeWalletId,
