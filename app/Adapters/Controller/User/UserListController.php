@@ -13,7 +13,7 @@ declare(strict_types=1);
 namespace App\Adapters\Controller\User;
 
 use App\Application\UseCases\User\UserListUseCase;
-use App\Main\Factories\Domain\UseCases\User\UserListUseCaseFactory;
+use App\Main\Factories\Application\UseCases\User\UserListUseCaseFactory;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;

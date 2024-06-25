@@ -10,7 +10,7 @@ use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use App\Domain\Exceptions\User\CannotMakeTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
 use App\Domain\Exceptions\Wallet\WalletNotFoundException;
-use App\Main\Factories\Domain\UseCases\Transaction\TransactionStoreUseCaseFactory;
+use App\Main\Factories\Application\UseCases\Transaction\TransactionStoreUseCaseFactory;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Logger\LoggerFactory;
 use Psr\Http\Message\ResponseInterface as Response;

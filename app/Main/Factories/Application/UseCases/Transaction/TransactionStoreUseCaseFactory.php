@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Main\Factories\Domain\UseCases\Transaction;
+namespace App\Main\Factories\Application\UseCases\Transaction;
 
 use App\Application\UseCases\Transaction\TransactionStoreUseCase;
 use App\Main\Factories\Infra\Gateways\TransactionAuthorizeFactory;

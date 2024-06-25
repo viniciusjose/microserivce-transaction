@@ -6,7 +6,7 @@ use App\Adapters\Request\Auth\AuthLoginRequest;
 use App\Application\UseCases\Auth\AuthLoginUseCase;
 use App\Domain\DTO\Auth\Login\AuthLoginInputDto;
 use App\Domain\Exceptions\User\UserInvalidCredentialsException;
-use App\Main\Factories\Domain\UseCases\Auth\AuthLoginUseCaseFactory;
+use App\Main\Factories\Application\UseCases\Auth\AuthLoginUseCaseFactory;
 use Hyperf\HttpServer\Contract\ResponseInterface as HttpResponse;
 use Psr\Http\Message\ResponseInterface;
 

@@ -16,7 +16,7 @@ use App\Adapters\Request\User\UserStoreRequest;
 use App\Application\UseCases\User\UserStoreUseCase;
 use App\Domain\DTO\User\store\UserStoreInputDto;
 use App\Domain\Exceptions\User\UserDuplicateException;
-use App\Main\Factories\Domain\UseCases\User\UserStoreUseCaseFactory;
+use App\Main\Factories\Application\UseCases\User\UserStoreUseCaseFactory;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;

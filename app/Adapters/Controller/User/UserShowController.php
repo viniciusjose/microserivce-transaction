@@ -15,7 +15,7 @@ namespace App\Adapters\Controller\User;
 use App\Application\UseCases\User\UserShowUseCase;
 use App\Domain\DTO\User\show\UserShowInputDto;
 use App\Domain\Exceptions\User\UserNotFoundException;
-use App\Main\Factories\Domain\UseCases\User\UserShowUseCaseFactory;
+use App\Main\Factories\Application\UseCases\User\UserShowUseCaseFactory;
 use Hyperf\HttpServer\Contract\ResponseInterface;
 use Hyperf\Logger\LoggerFactory;
 use Psr\Log\LoggerInterface;

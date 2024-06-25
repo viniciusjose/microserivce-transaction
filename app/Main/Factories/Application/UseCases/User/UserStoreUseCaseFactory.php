@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Main\Factories\Domain\UseCases\User;
+namespace App\Main\Factories\Application\UseCases\User;
 
 use App\Application\UseCases\User\UserStoreUseCase;
 use App\Main\Factories\Infra\Gateways\UuidGeneratorFactory;

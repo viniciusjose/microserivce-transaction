@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Main\Factories\Domain\UseCases\Auth;
+namespace App\Main\Factories\Application\UseCases\Auth;
 
 use App\Application\UseCases\Auth\AuthLoginUseCase;
 use App\Main\Factories\Infra\Gateways\JwtFactory;
