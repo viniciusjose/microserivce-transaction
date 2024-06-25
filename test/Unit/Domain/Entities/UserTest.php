@@ -2,9 +2,8 @@
 
 namespace HyperfTest\Unit\Domain\Entities;
 
-use App\Domain\Entities\Transaction;
 use App\Domain\Entities\User;
-use App\Infra\Enums\UserType;
+use App\Domain\Enums\UserType;
 use Carbon\Carbon;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;

@@ -11,8 +11,8 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use App\Application\Controller\Transaction\TransactionStoreController;
-use App\Application\Middleware\AuthMiddleware;
+use App\Adapters\Controller\Transaction\TransactionStoreController;
+use App\Adapters\Middleware\AuthMiddleware;
 use Hyperf\HttpServer\Router\Router;
 
 Router::addGroup(

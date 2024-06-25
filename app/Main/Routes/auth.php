@@ -11,7 +11,7 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use App\Application\Controller\Auth\AuthLoginController;
+use App\Adapters\Controller\Auth\AuthLoginController;
 use Hyperf\HttpServer\Router\Router;
 
 Router::addGroup(

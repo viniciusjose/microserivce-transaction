@@ -11,10 +11,10 @@ declare(strict_types=1);
  * @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
  */
 
-use App\Application\Controller\User\UserListController;
-use App\Application\Controller\User\UserShowController;
-use App\Application\Controller\User\UserStoreController;
-use App\Application\Middleware\AuthMiddleware;
+use App\Adapters\Controller\User\UserListController;
+use App\Adapters\Controller\User\UserShowController;
+use App\Adapters\Controller\User\UserStoreController;
+use App\Adapters\Middleware\AuthMiddleware;
 use Hyperf\HttpServer\Router\Router;
 
 Router::post('user', [UserStoreController::class, '__invoke']);

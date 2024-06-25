@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace App\Domain\Entities;
 
+use App\Domain\Enums\UserType;
 use App\Domain\Exceptions\User\CannotMakeTransactionException;
-use App\Infra\Enums\UserType;
 use Carbon\Carbon;
 
 readonly class User

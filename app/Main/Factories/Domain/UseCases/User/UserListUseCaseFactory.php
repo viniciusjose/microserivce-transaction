@@ -2,7 +2,7 @@
 
 namespace App\Main\Factories\Domain\UseCases\User;
 
-use App\Domain\UseCases\User\UserListUseCase;
+use App\Application\UseCases\User\UserListUseCase;
 use App\Main\Factories\Infra\Repositories\Eloquent\UserRepositoryFactory;
 
 class UserListUseCaseFactory

@@ -12,7 +12,7 @@ declare(strict_types=1);
 
 namespace App\Domain\DTO\User\show;
 
-use App\Infra\Enums\UserType;
+use App\Domain\Enums\UserType;
 use Carbon\Carbon;
 use Hyperf\Contract\Arrayable;
 

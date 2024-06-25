@@ -2,7 +2,7 @@
 
 namespace App\Main\Factories\Domain\UseCases\Transaction;
 
-use App\Domain\UseCases\Transaction\TransactionStoreUseCase;
+use App\Application\UseCases\Transaction\TransactionStoreUseCase;
 use App\Main\Factories\Infra\Gateways\TransactionAuthorizeFactory;
 use App\Main\Factories\Infra\Gateways\UuidGeneratorFactory;
 use App\Main\Factories\Infra\Repositories\Eloquent\TransactionRepositoryFactory;

@@ -2,7 +2,7 @@
 
 namespace App\Main\Factories\Domain\UseCases\Auth;
 
-use App\Domain\UseCases\Auth\AuthLoginUseCase;
+use App\Application\UseCases\Auth\AuthLoginUseCase;
 use App\Main\Factories\Infra\Gateways\JwtFactory;
 use App\Main\Factories\Infra\Repositories\Eloquent\UserRepositoryFactory;
 
