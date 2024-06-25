@@ -2,6 +2,7 @@
 
 declare(strict_types=1);
 
+use Hyperf\Database\Commands\Migrations\MigrateCommand;
 use Hyperf\Contract\ApplicationInterface;
 use Hyperf\Contract\ConfigInterface;
 use Hyperf\Di\ClassLoader;
@@ -42,7 +43,7 @@ $config->set('databases.default', $config->get('databases.testing'));
 $container->get(ApplicationInterface::class);
 
 \Hyperf\Coroutine\run(function () use ($container) {
-    $migration = $container->get('Hyperf\Database\Commands\Migrations\MigrateCommand')->run(
+    $migration = $container->get(MigrateCommand::class)->run(
         new StringInput(''),
         new ConsoleOutput()
     );
