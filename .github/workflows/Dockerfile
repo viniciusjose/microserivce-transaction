@@ -5,7 +5,7 @@
 # @contact  group@hyperf.io
 # @license  https://github.com/hyperf/hyperf/blob/master/LICENSE
 
-FROM hyperf/hyperf:8.3-alpine-v3.19-swoole
+FROM hyperf/hyperf:8.2-alpine-v3.19-swoole
 LABEL maintainer="Hyperf Developers <group@hyperf.io>" version="1.0" license="MIT" app.name="Hyperf"
 
 ##
@@ -14,9 +14,13 @@ LABEL maintainer="Hyperf Developers <group@hyperf.io>" version="1.0" license="MI
 # --build-arg timezone=Asia/Shanghai
 ARG timezone
 
-ENV TIMEZONE=${timezone:-"Asia/Shanghai"} \
+ENV TIMEZONE=${timezone:-"America/Sao_Paulo"} \
     APP_ENV=prod \
+    PHPIZE_DEPS="php82-pecl-rdkafka php82-pecl-decimal" \
     SCAN_CACHEABLE=(true)
+
+
+RUN apk add $PHPIZE_DEPS
 
 # update
 RUN set -ex \
