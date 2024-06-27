@@ -22,9 +22,10 @@ readonly class WalletFactory
         $user = (new UserFactory())->create();
 
         return Wallet::create(array_merge([
-            'id'      => $this->faker->uuid(),
-            'user_id' => $user->id,
-            'balance' => 1000,
+            'id'           => $this->faker->uuid(),
+            'user_id'      => $user->id,
+            'balance'      => 1000,
+            'last_balance' => 0,
         ], $attributes));
     }
 }

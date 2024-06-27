@@ -4,6 +4,7 @@ namespace HyperfTest\Unit\Domain\Entities;
 
 use App\Domain\Entities\Transaction;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -17,13 +18,13 @@ class TransactionTest extends TestCase
         $wallet = new Transaction(
             payerWalletId: 'any_wallet_id',
             payeeWalletId: 'any_user_id',
-            value: 100,
+            value:  new Decimal('100'),
             date: Carbon::now()
         );
 
         $wallet->checkValue();
 
-        self::assertEquals(100, $wallet->value);
+        self::assertEquals(100, $wallet->value->toFloat());
     }
 
     #[Test]
@@ -32,7 +33,7 @@ class TransactionTest extends TestCase
         $wallet = new Transaction(
             payerWalletId: 'any_wallet_id',
             payeeWalletId: 'any_user_id',
-            value: 0,
+            value:  new Decimal('0'),
             date: Carbon::now()
         );
 

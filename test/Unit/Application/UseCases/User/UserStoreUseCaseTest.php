@@ -23,6 +23,7 @@ use App\Domain\Entities\Wallet;
 use App\Domain\Enums\UserType;
 use App\Domain\Exceptions\User\UserDuplicateException;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -61,7 +62,7 @@ class UserStoreUseCaseTest extends TestCase
         $walletStub = new Wallet(
             id: $faker->uuid(),
             userId: $this->userStub->id,
-            balance: 0,
+            balance: new Decimal('0'),
             createdAt: new Carbon()
         );
 

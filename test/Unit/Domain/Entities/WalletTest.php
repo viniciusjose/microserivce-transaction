@@ -4,6 +4,7 @@ namespace HyperfTest\Unit\Domain\Entities;
 
 use App\Domain\Entities\Wallet;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
@@ -17,7 +18,7 @@ class WalletTest extends TestCase
         $wallet = new Wallet(
             id: 'any_wallet_id',
             userId: 'any_user_id',
-            balance: 100,
+            balance: new Decimal('100'),
             createdAt: Carbon::now()
         );
 
@@ -30,7 +31,7 @@ class WalletTest extends TestCase
         $wallet = new Wallet(
             id: 'any_wallet_id',
             userId: 'any_user_id',
-            balance: 100,
+            balance: new Decimal('100'),
             createdAt: Carbon::now()
         );
 
@@ -43,14 +44,14 @@ class WalletTest extends TestCase
         $wallet = new Wallet(
             id: 'any_wallet_id',
             userId: 'any_user_id',
-            balance: 100,
+            balance: new Decimal('100'),
             createdAt: Carbon::now()
         );
 
-        $wallet->decreaseBalance(50);
+        $wallet->decreaseBalance( new Decimal('50'));
 
-        self::assertEquals(50, $wallet->balance);
-        self::assertEquals(100, $wallet->lastBalance);
+        self::assertEquals(50, $wallet->balance->toFloat());
+        self::assertEquals(100, $wallet->lastBalance->toFloat());
     }
 
     public function test_it_should_be_return_wallet_balance_increased(): void
@@ -58,13 +59,13 @@ class WalletTest extends TestCase
         $wallet = new Wallet(
             id: 'any_wallet_id',
             userId: 'any_user_id',
-            balance: 100,
+            balance: new Decimal('100'),
             createdAt: Carbon::now()
         );
 
-        $wallet->increaseBalance(50);
+        $wallet->increaseBalance( new Decimal('50'));
 
-        self::assertEquals(150, $wallet->balance);
-        self::assertEquals(100, $wallet->lastBalance);
+        self::assertEquals(150, $wallet->balance->toFloat());
+        self::assertEquals(100, $wallet->lastBalance->toFloat());
     }
 }

@@ -18,6 +18,7 @@ use App\Infra\Factories\TransactionFactory;
 use App\Infra\Factories\WalletFactory;
 use App\Infra\Repositories\Eloquent\TransactionRepository;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\DbConnection\Db;
@@ -61,7 +62,7 @@ class TransactionRepositoryTest extends TestCase
         $entity = new Transaction(
             payerWalletId: $this->payerWallet->id,
             payeeWalletId: $this->payeeWallet->id,
-            value: 100,
+            value: new Decimal(100),
             date: Carbon::now(),
             id: $this->faker->uuid()
         );

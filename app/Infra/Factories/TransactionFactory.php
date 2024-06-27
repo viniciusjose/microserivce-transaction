@@ -29,7 +29,7 @@ readonly class TransactionFactory
             'wallet_payer_id' => $walletPayer->id,
             'wallet_payee_id' => $walletPayee->id,
             'value'           => 100,
-            'created_at'            => Carbon::now()
+            'created_at'      => Carbon::now()
         ], $attributes));
     }
 }

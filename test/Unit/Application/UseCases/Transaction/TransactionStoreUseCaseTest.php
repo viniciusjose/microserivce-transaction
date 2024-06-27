@@ -21,6 +21,7 @@ use App\Domain\Exceptions\User\CannotMakeTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
 use App\Domain\Exceptions\Wallet\WalletNotFoundException;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Faker\Factory;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
@@ -84,21 +85,21 @@ class TransactionStoreUseCaseTest extends TestCase
         $this->walletStub = new Wallet(
             id: $faker->uuid(),
             userId: $this->userStub->id,
-            balance: 100,
+            balance: new Decimal('100'),
             createdAt: new Carbon()
         );
 
         $this->walletPayerStub = new Wallet(
             id: $faker->uuid(),
             userId: $this->payerStub->id,
-            balance: 100,
+            balance: new Decimal('100'),
             createdAt: new Carbon()
         );
 
         $this->transactionStub = new Transaction(
             payerWalletId: $this->walletPayerStub->id,
             payeeWalletId: $this->walletStub->id,
-            value: 100,
+            value: new Decimal('100'),
             date: new Carbon(),
             id: $faker->uuid()
         );

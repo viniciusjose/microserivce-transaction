@@ -8,6 +8,7 @@ use App\Domain\Contracts\Repositories\Wallet\WalletRepositoryInterface;
 use App\Domain\Entities\Wallet;
 use App\Infra\Entities\Wallet as Model;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Hyperf\DbConnection\Db;
 
 class WalletRepository implements WalletRepositoryInterface
@@ -19,8 +20,9 @@ class WalletRepository implements WalletRepositoryInterface
         return new Wallet(
             id: $wallet->id,
             userId: $wallet->user_id,
-            balance: $wallet->balance,
+            balance: new Decimal($wallet->balance),
             createdAt: $wallet->created_at,
+            lastBalance: new Decimal(0),
             updatedAt: $wallet->updated_at,
         );
     }
@@ -36,8 +38,9 @@ class WalletRepository implements WalletRepositoryInterface
         return new Wallet(
             id: $wallet->id,
             userId: $wallet->user_id,
-            balance: $wallet->balance,
+            balance: new Decimal($wallet->balance),
             createdAt: $wallet->created_at,
+            lastBalance: new Decimal($wallet->last_balance),
             updatedAt: $wallet->updated_at,
         );
     }

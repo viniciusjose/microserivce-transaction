@@ -13,6 +13,7 @@ use App\Domain\Entities\TransactionNotification;
 use App\Domain\Enums\StatusEnum;
 use App\Domain\Exceptions\Transaction\TransactionNotFoundException;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
@@ -44,7 +45,7 @@ class TransactionNotifyUseCaseTest extends TestCase
             new Transaction(
                 payerWalletId: 'any_uuid',
                 payeeWalletId: 'any_payee_wallet_uuid',
-                value: 100,
+                value: new Decimal('100'),
                 date: Carbon::now(),
                 id: 'uuid'
             )

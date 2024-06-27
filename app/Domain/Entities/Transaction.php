@@ -6,13 +6,14 @@ namespace App\Domain\Entities;
 
 use App\Domain\Exceptions\Transaction\InvalidValueException;
 use Carbon\Carbon;
+use Decimal\Decimal;
 
 readonly class Transaction
 {
     public function __construct(
         public string $payerWalletId,
         public string $payeeWalletId,
-        public float $value,
+        public Decimal $value,
         public Carbon $date,
         public ?string $id = null
     ) {

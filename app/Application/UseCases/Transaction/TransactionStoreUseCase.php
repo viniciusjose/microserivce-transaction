@@ -17,6 +17,7 @@ use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
 use App\Domain\Exceptions\Wallet\WalletNotFoundException;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Hyperf\Coroutine\Parallel;
 
 readonly class TransactionStoreUseCase
@@ -96,7 +97,7 @@ readonly class TransactionStoreUseCase
         $transaction = new Transaction(
             payerWalletId: $payerWallet->id,
             payeeWalletId: $payeeWallet->id,
-            value: $data->value,
+            value: new Decimal((string)$data->value),
             date: Carbon::now(),
             id: $this->uuidGenerator->generate()
         );
@@ -107,8 +108,8 @@ readonly class TransactionStoreUseCase
             throw new NotValidTransactionException('Transaction not authorized', 400);
         }
 
-        $payerWallet->decreaseBalance($data->value);
-        $payeeWallet->increaseBalance($data->value);
+        $payerWallet->decreaseBalance($transaction->value);
+        $payeeWallet->increaseBalance($transaction->value);
 
         $this->transactionRepo->store($transaction);
 

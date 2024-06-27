@@ -5,6 +5,7 @@ namespace App\Infra\Repositories\Eloquent;
 use App\Domain\Contracts\Repositories\Transaction\TransactionRepositoryInterface;
 use App\Domain\Entities\Transaction;
 use App\Infra\Entities\Transaction as Model;
+use Decimal\Decimal;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
@@ -19,7 +20,7 @@ class TransactionRepository implements TransactionRepositoryInterface
         return new Transaction(
             payerWalletId: $entity->wallet_payer_id,
             payeeWalletId: $entity->wallet_payee_id,
-            value: $entity->value,
+            value: new Decimal($entity->value),
             date: $entity->created_at,
             id: $entity->id
         );

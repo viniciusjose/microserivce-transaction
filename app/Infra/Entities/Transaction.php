@@ -38,7 +38,6 @@ class Transaction extends Model
         'id'              => 'string',
         'wallet_payer_id' => 'string',
         'wallet_payee_id' => 'string',
-        'value'           => 'float',
         'created_at'      => 'datetime',
         'updated_at'      => 'datetime'
     ];

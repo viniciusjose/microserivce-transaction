@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Infra\Entities;
 
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Hyperf\DbConnection\Model\Model;
 
 /**
@@ -38,8 +39,6 @@ class Wallet extends Model
         'id'           => 'string',
         'user_id'      => 'string',
         'created_at'   => 'datetime',
-        'updated_at'   => 'datetime',
-        'balance'      => 'float',
-        'last_balance' => 'float',
+        'updated_at'   => 'datetime'
     ];
 }

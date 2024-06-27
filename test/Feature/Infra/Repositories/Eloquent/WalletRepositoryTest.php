@@ -16,6 +16,7 @@ use App\Domain\Entities\Wallet;
 use App\Infra\Factories\WalletFactory;
 use App\Infra\Repositories\Eloquent\WalletRepository;
 use Carbon\Carbon;
+use Decimal\Decimal;
 use Faker\Factory;
 use Faker\Generator;
 use Hyperf\DbConnection\Db;
@@ -54,8 +55,8 @@ class WalletRepositoryTest extends TestCase
             [
                 [
                     'id'           => $faker->uuid(),
-                    'balance'      => $faker->randomFloat(2, 0, 1000),
-                    'last_balance' => $faker->randomFloat(2, 0, 1000),
+                    'balance'      => new Decimal((string)$faker->randomFloat(2, 0, 1000)),
+                    'last_balance' => new Decimal((string)$faker->randomFloat(2, 0, 1000)),
                     'user_id'      => $faker->uuid(),
                     'created_at'   => Carbon::now()
                 ],
@@ -80,13 +81,13 @@ class WalletRepositoryTest extends TestCase
         $wallet = new Wallet(
             id: $model->id,
             userId: $model->user_id,
-            balance: (float)$model->balance,
+            balance: new Decimal($model->balance),
             createdAt: $model->created_at,
-            lastBalance: (float)$model->last_balance,
+            lastBalance: new Decimal($model->last_balance),
             updatedAt: $model->updatedAt
         );
 
-        $wallet->increaseBalance(100);
+        $wallet->increaseBalance(new Decimal('100'));
 
         $this->sut->updateBalance($wallet);
 
