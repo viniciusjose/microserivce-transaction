@@ -10,3 +10,6 @@ jobs:
         uses: actions/checkout@v2
       - name: Build
         run: cp -rf .github/workflows/Dockerfile . && docker build -t hyperf .
+      - name: test
+        
+        run: docker exec -it hyperf composer test
