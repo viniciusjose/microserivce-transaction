@@ -11,6 +11,6 @@ jobs:
       - name: Build
         run: cp -rf .github/workflows/Dockerfile . && docker build -t hyperf .
       - name: Run
-        run: docker run hyperf
+        run: docker run -d hyperf
       - name: Test
         run: docker exec -it hyperf composer test
