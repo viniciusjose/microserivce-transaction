@@ -92,8 +92,6 @@ readonly class TransactionStoreUseCase
             throw new WalletNotFoundException('Payer wallet not found', 404);
         }
 
-        $payerWallet->hasEnoughBalance($data->value);
-
         $transaction = new Transaction(
             payerWalletId: $payerWallet->id,
             payeeWalletId: $payeeWallet->id,

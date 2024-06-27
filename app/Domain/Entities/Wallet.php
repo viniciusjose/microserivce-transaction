@@ -20,7 +20,7 @@ class Wallet
     ) {
     }
 
-    public function hasEnoughBalance(float $value): void
+    public function hasEnoughBalance(Decimal $value): void
     {
         if ($this->balance < $value) {
             throw new NotEnoughBalanceException('Payer has no enough balance', 400);
@@ -35,6 +35,8 @@ class Wallet
 
     public function increaseBalance(Decimal $value): void
     {
+        $this->hasEnoughBalance($value);
+
         $this->lastBalance = $this->balance;
         $this->balance += $value;
     }

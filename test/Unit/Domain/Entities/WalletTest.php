@@ -22,7 +22,7 @@ class WalletTest extends TestCase
             createdAt: Carbon::now()
         );
 
-        self::assertNull($wallet->hasEnoughBalance(50));
+        self::assertNull($wallet->hasEnoughBalance(new Decimal(50)));
     }
 
     #[Test]
@@ -36,7 +36,7 @@ class WalletTest extends TestCase
         );
 
         $this->expectExceptionMessage('Payer has no enough balance');
-        $wallet->hasEnoughBalance(150);
+        $wallet->hasEnoughBalance(new Decimal(150));
     }
 
     public function test_it_should_be_return_wallet_balance_decreased(): void
