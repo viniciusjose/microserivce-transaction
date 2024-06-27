@@ -71,4 +71,23 @@ class TransactionRepositoryTest extends TestCase
         $this->assertIsString($transaction->id);
         $this->assertEquals($entity->value, $transaction->value);
     }
+
+    #[Test]
+    public function test_show_it_should_be_return_transaction(): void
+    {
+        $entity = (new TransactionFactory())->create();
+
+        $transaction = $this->sut->show($entity->id);
+
+        $this->assertEquals($entity->id, $transaction->id);
+    }
+
+
+    #[Test]
+    public function test_show_it_should_be_return_null_if_not_find_transaction(): void
+    {
+        $transaction = $this->sut->show('any_id');
+
+        $this->assertNull($transaction);
+    }
 }

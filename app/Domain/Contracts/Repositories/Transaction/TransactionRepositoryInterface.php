@@ -2,7 +2,7 @@
 
 namespace App\Domain\Contracts\Repositories\Transaction;
 
-interface TransactionRepositoryInterface extends TransactionStoreInterface
+interface TransactionRepositoryInterface extends TransactionStoreInterface, TransactionShowInterface
 {
 
 }

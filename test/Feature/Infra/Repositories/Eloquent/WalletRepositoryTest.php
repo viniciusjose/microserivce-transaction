@@ -92,4 +92,20 @@ class WalletRepositoryTest extends TestCase
 
         self::assertEquals($wallet->balance, $this->sut->getByUser($wallet->userId)->balance);
     }
+
+    public function test_get_by_user_it_should_be_return_an_wallet(): void
+    {
+        $model = (new WalletFactory())->create();
+
+        $wallet = $this->sut->getByUser($model->user_id);
+
+        self::assertEquals($model->id, $wallet->id);
+    }
+
+    public function test_get_by_user_it_should_be_return_null_if_wallet_dont_exists(): void
+    {
+        $wallet = $this->sut->getByUser('any_id');
+
+        self::assertNull($wallet);
+    }
 }

@@ -19,13 +19,14 @@ use App\Domain\Exceptions\Transaction\NotEnoughBalanceException;
 use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use App\Domain\Exceptions\User\CannotMakeTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
+use App\Domain\Exceptions\Wallet\WalletNotFoundException;
 use Carbon\Carbon;
 use Faker\Factory;
-use HyperfTest\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
+use PHPUnit\Framework\TestCase;
 
 use function Hyperf\Coroutine\run;
 
@@ -136,15 +137,17 @@ class TransactionStoreUseCaseTest extends TestCase
     #[Test]
     public function test_it_should_be_do_transaction_correctly(): void
     {
-        $data = new TransactionStoreInputDto(
-            value: 100,
-            payee_id: $this->userStub->id,
-            payer_id: $this->payerStub->id,
-        );
+        run(function () {
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: $this->userStub->id,
+                payer_id: $this->payerStub->id,
+            );
 
-        $sutData = $this->sut->handle($data);
+            $sutData = $this->sut->handle($data);
 
-        self::assertTrue($sutData);
+            self::assertTrue($sutData);
+        });
     }
 
     /**
@@ -153,22 +156,27 @@ class TransactionStoreUseCaseTest extends TestCase
     #[Test]
     public function test_it_should_be_throw_if_payer_not_exists(): void
     {
-        $this->expectException(UserNotFoundException::class);
+        run(function () {
+            $this->userRepoMock = $this->createMock(UserShowInterface::class);
+            $this->userRepoMock->method('show')
+                ->willReturnOnConsecutiveCalls(null, $this->userStub);
 
-        $this->userRepoMock = $this->createMock(UserShowInterface::class);
-        $this->userRepoMock->method('show')
-            ->willReturnOnConsecutiveCalls(null, $this->userStub);
+            $sut = $this->makeSut();
 
-        $sut = $this->makeSut();
-
-        $data = new TransactionStoreInputDto(
-            value: 100,
-            payee_id: 'any_id',
-            payer_id: $this->payerStub->id,
-        );
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: 'any_id',
+                payer_id: $this->payerStub->id,
+            );
 
 
-        $sut->handle($data);
+            try {
+                $sut->handle($data);
+            } catch (UserNotFoundException $e) {
+                self::assertEquals('Payer not found', $e->getMessage());
+                self::assertEquals(404, $e->getCode());
+            }
+        });
     }
 
     /**
@@ -177,64 +185,137 @@ class TransactionStoreUseCaseTest extends TestCase
     #[Test]
     public function test_it_should_be_throw_if_payee_not_exists(): void
     {
-        $this->expectException(UserNotFoundException::class);
+        run(function () {
+            $this->userRepoMock = $this->createMock(UserShowInterface::class);
+            $this->userRepoMock->method('show')
+                ->willReturnOnConsecutiveCalls($this->payerStub, null);
 
-        $this->userRepoMock = $this->createMock(UserShowInterface::class);
-        $this->userRepoMock->method('show')
-            ->willReturnOnConsecutiveCalls($this->payerStub, null);
+            $sut = $this->makeSut();
 
-        $sut = $this->makeSut();
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: 'any_id',
+                payer_id: $this->payerStub->id,
+            );
 
-        $data = new TransactionStoreInputDto(
-            value: 100,
-            payee_id: 'any_id',
-            payer_id: $this->payerStub->id,
-        );
+            try {
+                $sut->handle($data);
+            } catch (UserNotFoundException $e) {
+                self::assertEquals('Payee not found', $e->getMessage());
+                self::assertEquals(404, $e->getCode());
+            }
+        });
+    }
 
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function test_it_should_be_throw_if_wallet_payee_not_exists(): void
+    {
+        $this->walletRepoMock = $this->createMock(WalletRepositoryInterface::class);
+        $this->walletRepoMock->method('getByUser')
+            ->willReturnOnConsecutiveCalls($this->walletPayerStub, null);
+        run(function () {
+            $sut = $this->makeSut();
 
-        $sut->handle($data);
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: $this->userStub->id,
+                payer_id: $this->payerStub->id,
+            );
+
+            try {
+                $sut->handle($data);
+            } catch (WalletNotFoundException $e) {
+                self::assertEquals('Payee wallet not found', $e->getMessage());
+                self::assertEquals(404, $e->getCode());
+            }
+        });
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function test_it_should_be_throw_if_wallet_payer_not_exists(): void
+    {
+        $this->walletRepoMock = $this->createMock(WalletRepositoryInterface::class);
+        $this->walletRepoMock->method('getByUser')
+            ->willReturnOnConsecutiveCalls(null, $this->walletStub);
+        run(function () {
+            $sut = $this->makeSut();
+
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: $this->userStub->id,
+                payer_id: $this->payerStub->id,
+            );
+
+            try {
+                $sut->handle($data);
+            } catch (WalletNotFoundException $e) {
+                self::assertEquals('Payer wallet not found', $e->getMessage());
+                self::assertEquals(404, $e->getCode());
+            }
+        });
     }
 
     #[Test]
     public function test_it_should_be_throw_if_value_sent_is_zero(): void
     {
-        $this->expectException(InvalidValueException::class);
+        run(function () {
+            $data = new TransactionStoreInputDto(
+                value: 0,
+                payee_id: 'any_id',
+                payer_id: $this->payerStub->id,
+            );
 
-        $data = new TransactionStoreInputDto(
-            value: 0,
-            payee_id: 'any_id',
-            payer_id: $this->payerStub->id,
-        );
-
-        $this->sut->handle($data);
+            try {
+                $this->sut->handle($data);
+            } catch (InvalidValueException $e) {
+                self::assertEquals('The value must be greater than 0', $e->getMessage());
+                self::assertEquals(400, $e->getCode());
+            }
+        });
     }
 
     #[Test]
     public function test_it_should_be_throw_if_payer_has_no_enough_balance(): void
     {
-        $this->expectException(NotEnoughBalanceException::class);
+        run(function () {
+            $data = new TransactionStoreInputDto(
+                value: 101,
+                payee_id: $this->userStub->id,
+                payer_id: $this->payerStub->id,
+            );
 
-        $data = new TransactionStoreInputDto(
-            value: 101,
-            payee_id: $this->userStub->id,
-            payer_id: $this->payerStub->id,
-        );
-
-        $this->sut->handle($data);
+            try {
+                $this->sut->handle($data);
+            } catch (NotEnoughBalanceException $e) {
+                self::assertEquals('Payer has no enough balance', $e->getMessage());
+                self::assertEquals(400, $e->getCode());
+            }
+        });
     }
 
     #[Test]
     public function test_it_should_be_throw_if_payer_is_the_same_on_payee(): void
     {
-        $this->expectException(NotValidTransactionException::class);
+        run(function () {
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: $this->userStub->id,
+                payer_id: $this->userStub->id,
+            );
 
-        $data = new TransactionStoreInputDto(
-            value: 100,
-            payee_id: $this->userStub->id,
-            payer_id: $this->userStub->id,
-        );
-
-        $this->sut->handle($data);
+            try {
+                $this->sut->handle($data);
+            } catch (NotValidTransactionException $e) {
+                self::assertEquals('Payer and payee cannot be the same', $e->getMessage());
+                self::assertEquals(400, $e->getCode());
+            }
+        });
     }
 
     /**
@@ -243,37 +324,42 @@ class TransactionStoreUseCaseTest extends TestCase
     #[Test]
     public function test_it_should_be_throw_if_payer_is_the_salesman(): void
     {
-        $this->expectException(CannotMakeTransactionException::class);
+        run(function () {
+            $payer = new User(
+                id: 'any_id',
+                name: 'any_name',
+                userType: UserType::SALESMAN,
+                email: 'any_email',
+                password: 'any_password',
+                identify: 'any_identify',
+                createdAt: new Carbon()
+            );
 
-        $payer = new User(
-            id: 'any_id',
-            name: 'any_name',
-            userType: UserType::SALESMAN,
-            email: 'any_email',
-            password: 'any_password',
-            identify: 'any_identify',
-            createdAt: new Carbon()
-        );
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: $this->userStub->id,
+                payer_id: $payer->id,
+            );
 
-        $data = new TransactionStoreInputDto(
-            value: 100,
-            payee_id: $this->userStub->id,
-            payer_id: $payer->id,
-        );
+            $userRepoMock = $this->createMock(UserShowInterface::class);
+            $userRepoMock->method('show')->willReturn($payer);
 
-        $userRepoMock = $this->createMock(UserShowInterface::class);
-        $userRepoMock->method('show')->willReturn($payer);
+            $sut = new TransactionStoreUseCase(
+                $this->uuidGeneratorMock,
+                $this->transactionRepoMock,
+                $userRepoMock,
+                $this->walletRepoMock,
+                $this->authorizationGatewayMock,
+                $this->kafkaProduceMessageMock
+            );
 
-        $sut = new TransactionStoreUseCase(
-            $this->uuidGeneratorMock,
-            $this->transactionRepoMock,
-            $userRepoMock,
-            $this->walletRepoMock,
-            $this->authorizationGatewayMock,
-            $this->kafkaProduceMessageMock
-        );
-
-        $sut->handle($data);
+            try {
+                $sut->handle($data);
+            } catch (CannotMakeTransactionException $e) {
+                self::assertEquals('Salesman cannot make transactions', $e->getMessage());
+                self::assertEquals(400, $e->getCode());
+            }
+        });
     }
 
     /**
@@ -282,37 +368,42 @@ class TransactionStoreUseCaseTest extends TestCase
     #[Test]
     public function test_it_should_be_throw_if_transaction_is_not_authorized(): void
     {
-        $payer = new User(
-            id: 'any_id',
-            name: 'any_name',
-            userType: UserType::USER,
-            email: 'any_email',
-            password: 'any_password',
-            identify: 'any_identify',
-            createdAt: new Carbon()
-        );
+        run(function () {
+            $payer = new User(
+                id: 'any_id',
+                name: 'any_name',
+                userType: UserType::USER,
+                email: 'any_email',
+                password: 'any_password',
+                identify: 'any_identify',
+                createdAt: new Carbon()
+            );
 
-        $data = new TransactionStoreInputDto(
-            value: 100,
-            payee_id: $this->userStub->id,
-            payer_id: $payer->id,
-        );
+            $data = new TransactionStoreInputDto(
+                value: 100,
+                payee_id: $this->userStub->id,
+                payer_id: $payer->id,
+            );
 
-        $authorizeMock = $this->createMock(TransactionAuthorizeInterface::class);
-        $authorizeMock->method('authorize')->willReturn(false);
+            $authorizeMock = $this->createMock(TransactionAuthorizeInterface::class);
+            $authorizeMock->method('authorize')->willReturn(false);
 
-        $this->expectException(NotValidTransactionException::class);
+            $sut = new TransactionStoreUseCase(
+                $this->uuidGeneratorMock,
+                $this->transactionRepoMock,
+                $this->userRepoMock,
+                $this->walletRepoMock,
+                $authorizeMock,
+                $this->kafkaProduceMessageMock
+            );
 
-        $sut = new TransactionStoreUseCase(
-            $this->uuidGeneratorMock,
-            $this->transactionRepoMock,
-            $this->userRepoMock,
-            $this->walletRepoMock,
-            $authorizeMock,
-            $this->kafkaProduceMessageMock
-        );
-
-        $sut->handle($data);
+            try {
+                $sut->handle($data);
+            } catch (NotValidTransactionException $e) {
+                self::assertEquals('Transaction not authorized', $e->getMessage());
+                self::assertEquals(400, $e->getCode());
+            }
+        });
     }
 
     private function makeSut(): TransactionStoreUseCase

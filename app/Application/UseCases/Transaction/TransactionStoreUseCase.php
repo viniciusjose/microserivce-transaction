@@ -78,8 +78,8 @@ readonly class TransactionStoreUseCase
         });
 
         /**
-         * @var Wallet|null $payer
-         * @var Wallet|null $payee
+         * @var Wallet|null $payerWallet
+         * @var Wallet|null $payeeWallet
          **/
         [$payerWallet, $payeeWallet] = $parallel->wait();
 
@@ -117,17 +117,19 @@ readonly class TransactionStoreUseCase
             $this->walletRepo->updateBalance($payeeWallet);
         });
 
-        $this->kafkaProduceMessage->produce(
-            'notification',
-            'transaction',
-            [
-                'transaction_id' => $transaction->id,
-                'payer_id'       => $payer->id,
-                'payee_id'       => $payee->id,
-                'value'          => $data->value,
-                'date'           => $transaction->date->toDateTimeString()
-            ]
-        );
+        \Hyperf\Coroutine\go(function () use ($transaction, $payer, $payee, $data) {
+            $this->kafkaProduceMessage->produce(
+                'notification',
+                'transaction',
+                [
+                    'transaction_id' => $transaction->id,
+                    'payer_id'       => $payer->id,
+                    'payee_id'       => $payee->id,
+                    'value'          => $data->value,
+                    'date'           => $transaction->date->toDateTimeString()
+                ]
+            );
+        });
 
         return true;
     }

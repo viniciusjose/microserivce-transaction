@@ -8,6 +8,22 @@ use App\Infra\Entities\Transaction as Model;
 
 class TransactionRepository implements TransactionRepositoryInterface
 {
+    public function show(string $id): ?Transaction
+    {
+        $entity = Model::find($id);
+
+        if ($entity === null) {
+            return null;
+        }
+
+        return new Transaction(
+            payerWalletId: $entity->wallet_payer_id,
+            payeeWalletId: $entity->wallet_payee_id,
+            value: $entity->value,
+            date: $entity->created_at,
+            id: $entity->id
+        );
+    }
 
     public function store(Transaction $transaction): Transaction
     {

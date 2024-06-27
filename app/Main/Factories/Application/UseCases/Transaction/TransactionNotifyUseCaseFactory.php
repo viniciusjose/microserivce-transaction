@@ -6,6 +6,7 @@ use App\Application\UseCases\Transaction\TransactionNotifyUseCase;
 use App\Main\Factories\Infra\Gateways\TransactionNotifyClientFactory;
 use App\Main\Factories\Infra\Gateways\UuidGeneratorFactory;
 use App\Main\Factories\Infra\Repositories\Eloquent\TransactionNotificationRepositoryFactory;
+use App\Main\Factories\Infra\Repositories\Eloquent\TransactionRepositoryFactory;
 
 class TransactionNotifyUseCaseFactory
 {
@@ -13,6 +14,7 @@ class TransactionNotifyUseCaseFactory
     {
         return new TransactionNotifyUseCase(
             UuidGeneratorFactory::make(),
+            TransactionRepositoryFactory::make(),
             TransactionNotificationRepositoryFactory::make(),
             TransactionNotifyClientFactory::make()
         );
