@@ -11,10 +11,13 @@ use App\Domain\Contracts\Repositories\Wallet\WalletGetByUserInterface;
 use App\Domain\Contracts\Repositories\Wallet\WalletUpdateBalanceInterface;
 use App\Domain\DTO\Transaction\store\TransactionStoreInputDto;
 use App\Domain\Entities\Transaction;
+use App\Domain\Entities\User;
+use App\Domain\Entities\Wallet;
 use App\Domain\Exceptions\Transaction\NotValidTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
 use App\Domain\Exceptions\Wallet\WalletNotFoundException;
 use Carbon\Carbon;
+use Hyperf\Coroutine\Parallel;
 
 readonly class TransactionStoreUseCase
 {
@@ -38,8 +41,21 @@ readonly class TransactionStoreUseCase
             );
         }
 
-        $payer = $this->userRepo->show($data->payer_id);
-        $payee = $this->userRepo->show($data->payee_id);
+        $parallel = new Parallel(2);
+
+        $parallel->add(function () use ($data) {
+            return $this->userRepo->show($data->payer_id);
+        });
+
+        $parallel->add(function () use ($data) {
+            return $this->userRepo->show($data->payee_id);
+        });
+
+        /**
+         * @var User|null $payer
+         * @var User|null $payee
+         **/
+        [$payer, $payee] = $parallel->wait();
 
         if ($payer === null) {
             throw new UserNotFoundException('Payer not found', 404);
@@ -51,13 +67,25 @@ readonly class TransactionStoreUseCase
 
         $payer->canDoTransaction();
 
-        $payeeWallet = $this->walletRepo->getByUser($payee->id);
+        $parallel = new Parallel(2);
+
+        $parallel->add(function () use ($payer) {
+            return $this->walletRepo->getByUser($payer->id);
+        });
+
+        $parallel->add(function () use ($payee) {
+            return $this->walletRepo->getByUser($payee->id);
+        });
+
+        /**
+         * @var Wallet|null $payer
+         * @var Wallet|null $payee
+         **/
+        [$payerWallet, $payeeWallet] = $parallel->wait();
 
         if ($payeeWallet === null) {
             throw new WalletNotFoundException('Payee wallet not found', 404);
         }
-
-        $payerWallet = $this->walletRepo->getByUser($payer->id);
 
         if ($payerWallet === null) {
             throw new WalletNotFoundException('Payer wallet not found', 404);
@@ -84,18 +112,20 @@ readonly class TransactionStoreUseCase
 
         $this->transactionRepo->store($transaction);
 
-        $this->walletRepo->updateBalance($payerWallet);
-        $this->walletRepo->updateBalance($payeeWallet);
+        \Hyperf\Coroutine\go(function () use ($payerWallet, $payeeWallet) {
+            $this->walletRepo->updateBalance($payerWallet);
+            $this->walletRepo->updateBalance($payeeWallet);
+        });
 
         $this->kafkaProduceMessage->produce(
             'notification',
             'transaction',
             [
                 'transaction_id' => $transaction->id,
-                'payer_id' => $payer->id,
-                'payee_id' => $payee->id,
-                'value'    => $data->value,
-                'date'     => $transaction->date->toDateTimeString()
+                'payer_id'       => $payer->id,
+                'payee_id'       => $payee->id,
+                'value'          => $data->value,
+                'date'           => $transaction->date->toDateTimeString()
             ]
         );
 

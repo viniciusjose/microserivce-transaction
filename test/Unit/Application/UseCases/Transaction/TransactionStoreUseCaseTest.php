@@ -7,7 +7,6 @@ use App\Domain\Contracts\Gateways\KafkaProduceMessageInterface;
 use App\Domain\Contracts\Gateways\TransactionAuthorizeInterface;
 use App\Domain\Contracts\Gateways\UuidGeneratorInterface;
 use App\Domain\Contracts\Repositories\Transaction\TransactionRepositoryInterface;
-use App\Domain\Contracts\Repositories\User\UserRepositoryInterface;
 use App\Domain\Contracts\Repositories\User\UserShowInterface;
 use App\Domain\Contracts\Repositories\Wallet\WalletRepositoryInterface;
 use App\Domain\DTO\Transaction\store\TransactionStoreInputDto;
@@ -22,11 +21,13 @@ use App\Domain\Exceptions\User\CannotMakeTransactionException;
 use App\Domain\Exceptions\User\UserNotFoundException;
 use Carbon\Carbon;
 use Faker\Factory;
+use HyperfTest\TestCase;
 use PHPUnit\Framework\Attributes\CoversClass;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\Attributes\UsesClass;
 use PHPUnit\Framework\MockObject\Exception;
-use PHPUnit\Framework\TestCase;
+
+use function Hyperf\Coroutine\run;
 
 /**
  * @property User $userStub
@@ -47,6 +48,7 @@ class TransactionStoreUseCaseTest extends TestCase
 
     protected Transaction $transactionStub;
     protected Wallet $walletStub;
+    protected Wallet $walletPayerStub;
     protected User $payerStub;
     protected User $userStub;
 
@@ -85,7 +87,7 @@ class TransactionStoreUseCaseTest extends TestCase
             createdAt: new Carbon()
         );
 
-        $walletPayerStub = new Wallet(
+        $this->walletPayerStub = new Wallet(
             id: $faker->uuid(),
             userId: $this->payerStub->id,
             balance: 100,
@@ -93,7 +95,7 @@ class TransactionStoreUseCaseTest extends TestCase
         );
 
         $this->transactionStub = new Transaction(
-            payerWalletId: $walletPayerStub->id,
+            payerWalletId: $this->walletPayerStub->id,
             payeeWalletId: $this->walletStub->id,
             value: 100,
             date: new Carbon(),
@@ -107,10 +109,12 @@ class TransactionStoreUseCaseTest extends TestCase
         $this->transactionRepoMock->method('store')->willReturn($this->transactionStub);
 
         $this->userRepoMock = $this->createMock(UserShowInterface::class);
-        $this->userRepoMock->method('show')->willReturn($this->userStub);
+        $this->userRepoMock->method('show')
+            ->willReturnOnConsecutiveCalls($this->payerStub, $this->userStub);
 
         $this->walletRepoMock = $this->createMock(WalletRepositoryInterface::class);
-        $this->walletRepoMock->method('getByUser')->willReturn($this->walletStub);
+        $this->walletRepoMock->method('getByUser')
+            ->willReturnOnConsecutiveCalls($this->walletPayerStub, $this->walletStub);
         $this->walletRepoMock->method('updateBalance');
 
         $this->authorizationGatewayMock = $this->createMock(TransactionAuthorizeInterface::class);
@@ -147,27 +151,46 @@ class TransactionStoreUseCaseTest extends TestCase
      * @throws Exception
      */
     #[Test]
-    public function test_it_should_be_throw_if_payee_not_exists(): void
+    public function test_it_should_be_throw_if_payer_not_exists(): void
     {
         $this->expectException(UserNotFoundException::class);
 
-        $mock = $this->createMock(UserRepositoryInterface::class);
-        $mock->method('show')->willReturn(null);
+        $this->userRepoMock = $this->createMock(UserShowInterface::class);
+        $this->userRepoMock->method('show')
+            ->willReturnOnConsecutiveCalls(null, $this->userStub);
 
-        $sut = new TransactionStoreUseCase(
-            $this->uuidGeneratorMock,
-            $this->transactionRepoMock,
-            $mock,
-            $this->walletRepoMock,
-            $this->authorizationGatewayMock,
-            $this->kafkaProduceMessageMock
-        );
+        $sut = $this->makeSut();
 
         $data = new TransactionStoreInputDto(
             value: 100,
             payee_id: 'any_id',
             payer_id: $this->payerStub->id,
         );
+
+
+        $sut->handle($data);
+    }
+
+    /**
+     * @throws Exception
+     */
+    #[Test]
+    public function test_it_should_be_throw_if_payee_not_exists(): void
+    {
+        $this->expectException(UserNotFoundException::class);
+
+        $this->userRepoMock = $this->createMock(UserShowInterface::class);
+        $this->userRepoMock->method('show')
+            ->willReturnOnConsecutiveCalls($this->payerStub, null);
+
+        $sut = $this->makeSut();
+
+        $data = new TransactionStoreInputDto(
+            value: 100,
+            payee_id: 'any_id',
+            payer_id: $this->payerStub->id,
+        );
+
 
         $sut->handle($data);
     }
@@ -290,5 +313,17 @@ class TransactionStoreUseCaseTest extends TestCase
         );
 
         $sut->handle($data);
+    }
+
+    private function makeSut(): TransactionStoreUseCase
+    {
+        return new TransactionStoreUseCase(
+            $this->uuidGeneratorMock,
+            $this->transactionRepoMock,
+            $this->userRepoMock,
+            $this->walletRepoMock,
+            $this->authorizationGatewayMock,
+            $this->kafkaProduceMessageMock
+        );
     }
 }
